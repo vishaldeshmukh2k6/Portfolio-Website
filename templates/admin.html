@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+
+    <!-- Header -->
+<header class="bg-gray-800 p-6 shadow-md flex justify-between items-center">
+    <div>
+        <h1 class="text-3xl font-bold text-neon-text">Admin Dashboard</h1>
+        <p class="text-gray-400">Manage portfolio data and settings here.</p>
+    </div>
+
+    <!-- Logout Button -->
+    <form action="{{ url_for('logout') }}" method="GET">
+        <button type="submit"
+            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md shadow-md transition">
+            Logout
+        </button>
+    </form>
+</header>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8 space-y-12">
+
+        <!-- Messages Section -->
+        <section>
+            <h2 class="text-2xl font-bold mb-4">Visitor Messages</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full border border-gray-700 rounded-lg overflow-hidden shadow-lg">
+                    <thead class="bg-gray-800 text-gray-300 uppercase text-sm">
+                        <tr>
+                            <th class="py-3 px-6 text-left">ID</th>
+                            <th class="py-3 px-6 text-left">Product</th>
+                            <th class="py-3 px-6 text-left">Message</th>
+                            <th class="py-3 px-6 text-left">Created At</th>
+                            <th class="py-3 px-6 text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-700">
+                        {% for msg in messages %}
+                        <tr class="hover:bg-gray-800 transition">
+                            <td class="py-3 px-6">{{ msg.id }}</td>
+                            <td class="py-3 px-6">{{ msg.product }}</td>
+                            <td class="py-3 px-6">{{ msg.message }}</td>
+                            <td class="py-3 px-6">{{ msg.created_at.strftime("%Y-%m-%d %H:%M") }}</td>
+                            <td class="py-3 px-6 text-center">
+                                <form action="{{ url_for('delete_message', id=msg.id) }}" method="POST">
+                                    <button type="submit"
+                                        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md shadow-md transition">
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="py-6 text-center text-gray-400">No messages found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section>
+            <h2 class="text-2xl font-bold mb-4">Manage Projects</h2>
+            <!-- Add Project Form -->
+            <form action="{{ url_for('add_project') }}" method="POST"
+                class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 bg-gray-800 p-6 rounded-lg shadow-lg">
+                <input type="text" name="title" placeholder="Project Title" required
+                    class="px-4 py-2 rounded-md bg-gray-700 text-white">
+                <input type="text" name="description" placeholder="Project Description" required
+                    class="px-4 py-2 rounded-md bg-gray-700 text-white">
+                <input type="url" name="github" placeholder="GitHub Link"
+                    class="px-4 py-2 rounded-md bg-gray-700 text-white">
+                <input type="url" name="live" placeholder="Live Link"
+                    class="px-4 py-2 rounded-md bg-gray-700 text-white">
+                <button type="submit"
+                    class="col-span-full bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md text-white">Add Project</button>
+            </form>
+
+            <!-- Projects Table -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full border border-gray-700 rounded-lg overflow-hidden shadow-lg">
+                    <thead class="bg-gray-800 text-gray-300 uppercase text-sm">
+                        <tr>
+                            <th class="py-3 px-6 text-left">ID</th>
+                            <th class="py-3 px-6 text-left">Title</th>
+                            <th class="py-3 px-6 text-left">Description</th>
+                            <th class="py-3 px-6 text-left">Created At</th>
+                            <th class="py-3 px-6 text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-700">
+                        {% for p in projects %}
+                        <tr class="hover:bg-gray-800 transition">
+                            <td class="py-3 px-6">{{ p.id }}</td>
+                            <td class="py-3 px-6">{{ p.title }}</td>
+                            <td class="py-3 px-6">{{ p.description }}</td>
+                            <td class="py-3 px-6">{{ p.created_at.strftime("%Y-%m-%d") }}</td>
+                            <td class="py-3 px-6 text-center">
+                                <form action="{{ url_for('delete_project', id=p.id) }}" method="POST">
+                                    <button type="submit"
+                                        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="py-6 text-center text-gray-400">No projects yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Certificates Section -->
+        <section>
+            <h2 class="text-2xl font-bold mb-4">Manage Certificates</h2>
+            <!-- Add Certificate Form -->
+            <form action="{{ url_for('add_certificate') }}" method="POST"
+                class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 bg-gray-800 p-6 rounded-lg shadow-lg">
+                <input type="text" name="title" placeholder="Certificate Title" required
+                    class="px-4 py-2 rounded-md bg-gray-700 text-white">
+                <input type="text" name="issuer" placeholder="Issuer" required
+                    class="px-4 py-2 rounded-md bg-gray-700 text-white">
+                <input type="text" name="issued_date" placeholder="Issued Date (e.g., Jan 2025)" required
+                    class="px-4 py-2 rounded-md bg-gray-700 text-white">
+                <input type="url" name="link" placeholder="Certificate Link" required
+                    class="px-4 py-2 rounded-md bg-gray-700 text-white">
+                <button type="submit"
+                    class="col-span-full bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-white">Add Certificate</button>
+            </form>
+
+            <!-- Certificates Table -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full border border-gray-700 rounded-lg overflow-hidden shadow-lg">
+                    <thead class="bg-gray-800 text-gray-300 uppercase text-sm">
+                        <tr>
+                            <th class="py-3 px-6 text-left">ID</th>
+                            <th class="py-3 px-6 text-left">Title</th>
+                            <th class="py-3 px-6 text-left">Issuer</th>
+                            <th class="py-3 px-6 text-left">Issued Date</th>
+                            <th class="py-3 px-6 text-left">Link</th>
+                            <th class="py-3 px-6 text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-700">
+                        {% for c in certificates %}
+                        <tr class="hover:bg-gray-800 transition">
+                            <td class="py-3 px-6">{{ c.id }}</td>
+                            <td class="py-3 px-6">{{ c.title }}</td>
+                            <td class="py-3 px-6">{{ c.issuer }}</td>
+                            <td class="py-3 px-6">{{ c.issued_date }}</td>
+                            <td class="py-3 px-6">
+                                <a href="{{ c.link }}" target="_blank" class="text-neon-text hover:underline">View</a>
+                            </td>
+                            <td class="py-3 px-6 text-center">
+                                <form action="{{ url_for('delete_certificate', id=c.id) }}" method="POST">
+                                    <button type="submit"
+                                        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="py-6 text-center text-gray-400">No certificates yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Age Section -->
+        <section>
+            <h2 class="text-2xl font-bold mb-4">Update Profile Age</h2>
+            <form action="{{ url_for('update_age') }}" method="POST"
+                class="flex gap-4 items-center bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
+                <input type="number" name="age" placeholder="Enter Age" required min="10" max="100"
+                    value="{{ age }}"
+                    class="px-4 py-2 flex-1 rounded-md bg-gray-700 text-white">
+                <button type="submit"
+                    class="bg-purple-600 hover:bg-purple-700 px-6 py-2 rounded-md text-white">Save</button>
+            </form>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-500 text-center py-4">
+        &copy; {{ year }} Portfolio Admin Panel
+    </footer>
+
+</body>
+
+</html>

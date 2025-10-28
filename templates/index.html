@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        body.dark {
+            background-color: #0a192f;
+            color: #ccd6f6;
+        }
+        body.light {
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .glass-effect {
+            background: rgba(23, 49, 85, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-text {
+            color: #64ffda;
+        }
+        .section-heading {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+        .section-heading::after {
+            content: '';
+            display: block;
+            position: relative;
+            top: 2px;
+            width: 200px;
+            height: 1px;
+            margin-left: 20px;
+            background-color: #334155;
+        }
+        .typed-cursor {
+            color: #64ffda;
+        }
+    </style>
+</head>
+<body class="leading-relaxed antialiased dark">
+    <!-- Header -->
+    <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 glass-effect">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="/" class="text-2xl font-bold neon-text">VD</a>
+            <div class="hidden md:flex space-x-8 items-center">
+                <a href="#about" class="hover:text-neon-text transition duration-300">01. About</a>
+                <a href="#experience" class="hover:text-neon-text transition duration-300">02. Experience</a>
+                <a href="#projects" class="hover:text-neon-text transition duration-300">03. Projects</a>
+                <a href="#achievements" class="hover:text-neon-text transition duration-300">04. Achievements</a>
+                <a href="#contact" class="hover:text-neon-text transition duration-300">05. Contact</a>
+                <a href="{{ url_for('static', filename='resume.pdf') }}" target="_blank"
+                    class="border border-neon-text text-neon-text px-4 py-2 rounded-md hover:bg-neon-text hover:bg-opacity-10 transition duration-300">Resume</a>
+                <!-- Theme Toggle -->
+                <button id="theme-toggle"
+                    class="p-2 rounded-lg bg-slate-700 text-slate-200 hover:bg-slate-600 transition">
+                    <i id="theme-icon" class="fa-solid fa-sun"></i>
+                </button>
+            </div>
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" class="md:hidden text-2xl">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-900 absolute top-full left-0 w-full">
+            <div class="flex flex-col items-center space-y-4 py-4">
+                <a href="#about" class="hover:text-neon-text transition duration-300">01. About</a>
+                <a href="#experience" class="hover:text-neon-text transition duration-300">02. Experience</a>
+                <a href="#projects" class="hover:text-neon-text transition duration-300">03. Projects</a>
+                <a href="#achievements" class="hover:text-neon-text transition duration-300">04. Achievements</a>
+                <a href="#contact" class="hover:text-neon-text transition duration-300">05. Contact</a>
+                <a href="{{ url_for('static', filename='resume.pdf') }}" target="_blank"
+                    class="border border-neon-text text-neon-text px-4 py-2 rounded-md hover:bg-neon-text hover:bg-opacity-10 transition duration-300">Resume</a>
+                <!-- Mobile Theme Toggle -->
+                <button id="theme-toggle-mobile"
+                    class="p-2 rounded-lg bg-slate-700 text-slate-200 hover:bg-slate-600 transition">
+                    <i id="theme-icon-mobile" class="fa-solid fa-sun"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 md:px-16 lg:px-24 pt-24">
+        <!-- Hero Section -->
+        <section id="hero" class="min-h-screen flex flex-col justify-center">
+            <h1 class="text-lg neon-text mb-4" data-aos="fade-up">Hi, my name is</h1>
+            <h2 class="text-4xl md:text-7xl font-bold text-slate-200" data-aos="fade-up" data-aos-delay="100">Vishal
+                Deshmukh</h2>
+            <h3 class="text-4xl md:text-6xl font-bold text-slate-400 mt-2" data-aos="fade-up" data-aos-delay="200">
+                <span id="typed-text"></span>
+            </h3>
+            <div data-aos="fade-up" data-aos-delay="300">
+                <p class="max-w-xl mt-6 text-slate-400">
+                    I'm <b>Vishal Deshmukh</b>, a Software Developer from India focused on
+                    <b>Python</b>, <b>Flask</b>, and modern backend technologies.
+                    I turn ideas into practical apps — from <b>API integrations</b> to
+                    <b>eCommerce platforms</b> and <b>automation tools</b>.
+                </p>
+                <p class="max-w-xl mt-4 text-slate-400">
+                    Skilled in <b>FastAPI</b>, <b>WooCommerce REST APIs</b>, and cloud deployments,
+                    I enjoy building reliable systems and writing clean, efficient code.
+                    Right now, I'm exploring <b>API testing</b> and <b>scalable backend architectures</b>.
+                </p>
+
+                <p class="max-w-xl mt-4 text-slate-400">
+                    My goal is to grow as a developer and contribute to building innovative,
+                    user-focused digital products that make a difference.
+                </p>
+            </div>
+            <a href="#projects"
+                class="mt-8 inline-block w-max border border-neon-text text-neon-text px-8 py-4 rounded-md hover:bg-neon-text hover:bg-opacity-10 transition duration-300"
+                data-aos="fade-up" data-aos-delay="400">
+                Check out my work!
+            </a>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-24">
+            <h2 class="section-heading" data-aos="fade-up"><span class="neon-text mr-2">01.</span> About Me</h2>
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-12">
+                <div class="md:col-span-3 text-slate-400 space-y-4" data-aos="fade-right" data-aos-delay="100">
+                    <p>
+                        Hi, I'm <b>Vishal Deshmukh</b>, a Software Developer from India specializing in
+                        <b>Python</b>, <b>Flask</b>, and modern backend technologies.
+                        I build scalable APIs, eCommerce integrations, and real-world web solutions.
+                    </p>
+
+                    <p>
+                        I’ve worked with <b>FastAPI</b>, <b>WooCommerce REST APIs</b>, and <b>BeautifulSoup</b>,
+                        deploying projects like blogs, data scraping tools, and RESTful APIs on <b>PythonAnywhere</b>.
+                    </p>
+
+                    <p>
+                        Currently, I’m exploring <b>eCommerce systems</b>, <b>API testing</b>, and
+                        <b>scalable backend solutions</b>, while focusing on writing clean and efficient code.
+                    </p>
+
+                    <p>Here are a few technologies I’ve been working with recently:</p>
+
+                    <ul class="grid grid-cols-2 md:grid-cols-3 gap-2 mt-4">
+                        <!-- Programming Languages -->
+                        <li class="flex items-center"><span class="neon-text mr-2">▹</span>Python</li>
+                        <li class="flex items-center"><span class="neon-text mr-2">▹</span>JavaScript</li>
+                        <li class="flex items-center"><span class="neon-text mr-2">▹</span>PHP</li>
+
+                        <!-- Frameworks & Libraries -->
+                        <li class="flex items-center"><span class="neon-text mr-2">▹</span>Flask</li>
+                        <li class="flex items-center"><span class="neon-text mr-2">▹</span>FastAPI</li>
+                        <li class="flex items-center"><span class="neon-text mr-2">▹</span>Jinja2</li>
+
+                        <!-- Web & CMS -->
+                        <li class="flex items-center"><span class="neon-text mr-2">▹</span>WordPress</li>
+                        <li class="flex items-center"><span class="neon-text mr-2">▹</span>RESTful APIs</li>
+                        <li class="flex items-center"><span class="neon-text mr-2">▹</span>WooCommerce API</li>
+
+                        <!-- Databases -->
+                        <li class="flex items-center"><span class="neon-text mr-2">▹</span>MySQL</li>
+                        <li class="flex items-center"><span class="neon-text mr-2">▹</span>PostgreSQL</li>
+                        <li class="flex items-center"><span class="neon-text mr-2">▹</span>MongoDB</li>
+                        <li class="flex items-center"><span class="neon-text mr-2">▹</span>SQLAlchemy</li>
+
+                        <!-- Tools & DevOps -->
+                        <li class="flex items-center"><span class="neon-text mr-2">▹</span>Git & GitHub</li>
+                        <li class="flex items-center"><span class="neon-text mr-2">▹</span>Docker</li>
+                        <li class="flex items-center"><span class="neon-text mr-2">▹</span>CI/CD</li>
+                        <li class="flex items-center"><span class="neon-text mr-2">▹</span>Linux</li>
+
+                        <!-- Cloud & Deployment -->
+                        <li class="flex items-center"><span class="neon-text mr-2">▹</span>AWS</li>
+                        <li class="flex items-center"><span class="neon-text mr-2">▹</span>Heroku</li>
+                        <li class="flex items-center"><span class="neon-text mr-2">▹</span>PythonAnywhere</li>
+
+                        <!-- Others -->
+                        <li class="flex items-center"><span class="neon-text mr-2">▹</span>API Testing</li>
+                        <li class="flex items-center"><span class="neon-text mr-2">▹</span>Web Scraping</li>
+                        <li class="flex items-center"><span class="neon-text mr-2">▹</span>eCommerce Systems</li>
+                    </ul>
+
+                </div>
+                <div class="md:col-span-2 relative group" data-aos="fade-left" data-aos-delay="200">
+                    <div class="w-full h-80 rounded-lg bg-slate-700">
+                        <img src="{{ url_for('static', filename='img/vishal.jpeg') }}" alt="Profile Photo"
+                            class="w-full h-full object-cover rounded-lg mix-blend-luminosity hover:mix-blend-normal transition-all duration-300">
+                    </div>
+                    <div
+                        class="absolute top-4 left-4 w-full h-80 rounded-lg border-2 border-neon-text z-[-1] group-hover:top-2 group-hover:left-2 transition-all duration-300">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="experience" class="py-24">
+            <h2 class="section-heading" data-aos="fade-up"><span class="neon-text mr-2">02.</span> Where I've Worked
+            </h2>
+            <div class="max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+                <div class="relative border-l-2 border-slate-700 ml-4">
+                    <!-- Experience 1 -->
+                    <div class="mb-10 ml-8">
+                        <span
+                            class="absolute flex items-center justify-center w-8 h-8 bg-slate-800 rounded-full -left-4 ring-4 ring-slate-900">
+                            <i class="fa-solid fa-briefcase text-neon-text"></i>
+                        </span>
+                        <h3 class="text-xl font-semibold text-slate-200">Software Developer <span
+                                class="text-neon-text"><a href="https://swadesiway.com/">@Swadesi Way</a></span></h3>
+                        <time class="block mb-2 text-sm font-normal leading-none text-slate-500">Jan 2023 -
+                            Present</time>
+                        <ul class="list-disc pl-5 mt-4 space-y-2 text-slate-400">
+                            <li>Developed and maintained scalable REST APIs for e-commerce platforms using Python and
+                                Flask.</li>
+                            <li>Integrated third-party services like payment gateways and shipping providers.</li>
+                            <li>Collaborated with front-end developers to deliver seamless user experiences.</li>
+                        </ul>
+                    </div>
+                    <!-- Experience 2 -->
+                    <div class="mb-10 ml-8">
+                        <span
+                            class="absolute flex items-center justify-center w-8 h-8 bg-slate-800 rounded-full -left-4 ring-4 ring-slate-900">
+                            <i class="fa-solid fa-briefcase text-neon-text"></i>
+                        </span>
+                        <h3 class="text-xl font-semibold text-slate-200">Software Developer Intern <span
+                                class="text-neon-text"><a href="https://swadesiway.com/">@Swadesi Way</a></span></h3>
+                        <time class="block mb-2 text-sm font-normal leading-none text-slate-500">May 2022 - Dec
+                            2022</time>
+                        <ul class="list-disc pl-5 mt-4 space-y-2 text-slate-400">
+                            <li>Assisted in developing automation scripts for data scraping and processing.</li>
+                            <li>Worked on bug fixes and feature enhancements for existing web applications.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="py-24">
+            <h2 class="section-heading"><span class="neon-text mr-2">03.</span> Some Things I've Built</h2>
+            <div class="grid gap-12 mt-8">
+                {% for p in projects %}
+                <div class="p-6 rounded-lg glass-effect">
+                    <h3 class="text-2xl font-bold text-slate-200">{{ p.title }}</h3>
+                    <p class="mt-4 text-slate-400">{{ p.description }}</p>
+                    <div class="mt-6 flex space-x-4">
+                        {% if p.github_link %}
+                        <a href="{{ p.github_link }}" target="_blank" class="text-slate-300 hover:text-neon-text">
+                            <i class="fa-brands fa-github text-2xl"></i>
+                        </a>
+                        {% endif %}
+                        {% if p.live_link %}
+                        <a href="{{ p.live_link }}" target="_blank" class="text-slate-300 hover:text-neon-text">
+                            <i class="fa-solid fa-arrow-up-right-from-square text-2xl"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Achievements Section -->
+        <section id="achievements" class="py-24">
+            <h2 class="section-heading"><span class="neon-text mr-2">04.</span> Achievements & Certifications</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+                {% for c in certificates %}
+                <div class="p-6 rounded-lg glass-effect hover:scale-105 transition">
+                    <h3 class="text-xl font-bold text-slate-200">{{ c.title }}</h3>
+                    <p class="mt-2 text-slate-400">{{ c.issuer }}</p>
+                    <p class="mt-2 text-sm text-slate-500">Issued: {{ c.issued_date }}</p>
+                    <a href="{{ c.link }}" target="_blank" class="inline-block mt-4 text-neon-text hover:underline">View
+                        Certificate →</a>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-24 px-4 md:px-0 max-w-3xl mx-auto text-center relative" data-aos="fade-up">
+            <!-- Background Glow -->
+            <div
+                class="absolute inset-0 -z-10 bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 opacity-10 blur-3xl dark:from-purple-400 dark:via-pink-400 dark:to-indigo-400">
+            </div>
+
+            <h2 class="text-lg font-semibold tracking-widest text-neon-text dark:text-neon-text-dark uppercase">04.
+                What's Next?</h2>
+            <h3 class="text-4xl md:text-5xl font-extrabold text-slate-800 dark:text-slate-200 mt-4">Get In Touch</h3>
+            <p class="mt-6 text-slate-600 dark:text-slate-400 text-lg leading-relaxed">
+                I'm always open to new opportunities. My inbox is always open. Whether you have a question or just want
+                to say hi, I'll try my best to get back to you!
+            </p>
+
+            <!-- Contact Form -->
+            <form action="{{ url_for('contact') }}" method="POST"
+                class="mt-10 space-y-6 text-left bg-slate-100/60 dark:bg-slate-900/50 backdrop-blur-md p-8 rounded-2xl shadow-lg border border-slate-300 dark:border-slate-700">
+                <div>
+                    <label for="name" class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Name</label>
+                    <input type="text" id="name" name="name" required
+                        class="w-full px-5 py-3 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-neon-text dark:focus:ring-neon-text transition-all duration-300">
+                </div>
+
+                <div>
+                    <label for="email" class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Email</label>
+                    <input type="email" id="email" name="email" required
+                        class="w-full px-5 py-3 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-neon-text dark:focus:ring-neon-text transition-all duration-300">
+                </div>
+
+                <div>
+                    <label for="message"
+                        class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Message</label>
+                    <textarea id="message" name="message" rows="5" required
+                        class="w-full px-5 py-3 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-neon-text dark:focus:ring-neon-text transition-all duration-300"></textarea>
+                </div>
+
+                <button type="submit"
+                    class="w-full bg-gradient-to-r from-purple-500 to-pink-500 dark:from-purple-400 dark:to-pink-400 text-white font-semibold py-3 rounded-xl shadow-lg hover:scale-105 hover:shadow-2xl transition-transform duration-300">
+                    Send Message
+                </button>
+            </form>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="mt-6 space-y-3">
+                {% for category, message in messages %}
+                <div
+                    class="px-5 py-3 rounded-xl font-medium text-center {% if category == 'success' %}bg-green-500/20 text-green-600 dark:text-green-300{% else %}bg-red-500/20 text-red-600 dark:text-red-300{% endif %} backdrop-blur-sm">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-6">
+        <p>Contact me: <a href="mailto:vishaldeshmukh143@gmail.com">vishaldeshmukh143@gmail.com</a></p>
+        <div class="flex justify-center space-x-6 text-2xl mb-4">
+            <a href="https://github.com/vishaldeshmukh2k6" target="_blank"
+                class="text-slate-400 hover:text-neon-text transition duration-300"><i
+                    class="fa-brands fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/coder2024/" target="_blank"
+                class="text-slate-400 hover:text-neon-text transition duration-300"><i
+                    class="fa-brands fa-linkedin"></i></a>
+            <a href="/admin" target="_blank"
+                class="text-slate-400 hover:text-neon-text transition duration-300"><i
+                    class="fa-solid fa-user-shield text-gray-700 text-xl"></i></a>
+        </div>
+        <p class="text-sm text-slate-500">Design inspired by Brittany Chiang. Built by <b>Vishal Deshmukh</b>.</p>
+    </footer>
+
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            AOS.init({ duration: 800, once: true });
+
+            new Typed('#typed-text', {
+                strings: ["I craft scalable APIs.", "I build backend solutions.", "I love Python & Flask."],
+                typeSpeed: 50,
+                backSpeed: 25,
+                loop: true,
+                smartBackspace: true,
+            });
+
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            const body = document.body;
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeIcon = document.getElementById('theme-icon');
+            const themeToggleMobile = document.getElementById('theme-toggle-mobile');
+            const themeIconMobile = document.getElementById('theme-icon-mobile');
+
+            function applyTheme(theme) {
+                if (theme === 'light') {
+                    body.classList.remove('dark');
+                    body.classList.add('light');
+                    themeIcon.classList.replace('fa-sun', 'fa-moon');
+                    themeIconMobile.classList.replace('fa-sun', 'fa-moon');
+                } else {
+                    body.classList.remove('light');
+                    body.classList.add('dark');
+                    themeIcon.classList.replace('fa-moon', 'fa-sun');
+                    themeIconMobile.classList.replace('fa-moon', 'fa-sun');
+                }
+            }
+
+            let savedTheme = localStorage.getItem('theme') || 'dark';
+            applyTheme(savedTheme);
+
+            function toggleTheme() {
+                let newTheme = body.classList.contains('dark') ? 'light' : 'dark';
+                localStorage.setItem('theme', newTheme);
+                applyTheme(newTheme);
+            }
+
+            themeToggle.addEventListener('click', toggleTheme);
+            themeToggleMobile.addEventListener('click', toggleTheme);
+        });
+    </script>
+</body>
+
+</html>
