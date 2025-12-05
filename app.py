@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, send_file, redirect, url_for, flash, session
+from flask import Flask, render_template, request, jsonify, send_file, redirect, url_for, flash, session, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 from datetime import datetime, timedelta
@@ -28,7 +28,7 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf', 'txt', 'doc', 'docx'}
 
 # Security configurations
 app.config['WTF_CSRF_TIME_LIMIT'] = 3600
-app.config['SESSION_COOKIE_SECURE'] = True
+app.config['SESSION_COOKIE_SECURE'] = False  # Set to True only with HTTPS
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=1)
@@ -275,6 +275,10 @@ def resume():
 @app.route("/terms")
 def terms():
     return render_template("terms.html")
+
+@app.route("/health")
+def health():
+    return jsonify({"status": "healthy", "message": "Portfolio app is running"}), 200
 
 
 
@@ -925,51 +929,57 @@ def handle_csrf_error(e):
 # --- Main ---
 def initialize_app():
     """Initialize application data"""
-    with app.app_context():
-        try:
+    try:
+        with app.app_context():
+            # Create all database tables
             db.create_all()
+            print("Database tables created successfully")
             
             # Create upload directory
-            os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+            try:
+                os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+                print("Upload directory created")
+            except Exception as e:
+                print(f"Upload directory error: {e}")
             
             # Initialize default skills if none exist
-            if not Skill.query.first():
-                default_skills = [
-                    Skill(name="Python", category="Backend", proficiency=95, years_experience=3.5),
-                    Skill(name="Flask", category="Backend", proficiency=90, years_experience=3.0),
-                    Skill(name="FastAPI", category="Backend", proficiency=85, years_experience=2.0),
-                    Skill(name="JavaScript", category="Frontend", proficiency=80, years_experience=2.5),
-                    Skill(name="React", category="Frontend", proficiency=75, years_experience=1.5),
-                    Skill(name="TypeScript", category="Frontend", proficiency=70, years_experience=1.0),
-                    Skill(name="Node.js", category="Backend", proficiency=75, years_experience=2.0),
-                    Skill(name="MySQL", category="Database", proficiency=85, years_experience=3.0),
-                    Skill(name="PostgreSQL", category="Database", proficiency=80, years_experience=2.0),
-                    Skill(name="MongoDB", category="Database", proficiency=75, years_experience=1.5),
-                    Skill(name="Redis", category="Database", proficiency=70, years_experience=1.0),
-                    Skill(name="Docker", category="DevOps", proficiency=70, years_experience=1.0),
-                    Skill(name="AWS", category="Cloud", proficiency=75, years_experience=1.5),
-                    Skill(name="Git", category="Tools", proficiency=90, years_experience=3.0),
-                    Skill(name="Linux", category="Tools", proficiency=85, years_experience=2.5),
-                    Skill(name="Nginx", category="DevOps", proficiency=65, years_experience=0.5),
-                    Skill(name="WebSocket", category="Backend", proficiency=60, years_experience=0.5)
-                ]
-                for skill in default_skills:
-                    db.session.add(skill)
-                db.session.commit()
+            try:
+                if not Skill.query.first():
+                    default_skills = [
+                        Skill(name="Python", category="Backend", proficiency=95, years_experience=3.5),
+                        Skill(name="Flask", category="Backend", proficiency=90, years_experience=3.0),
+                        Skill(name="JavaScript", category="Frontend", proficiency=80, years_experience=2.5),
+                        Skill(name="React", category="Frontend", proficiency=75, years_experience=1.5),
+                        Skill(name="MySQL", category="Database", proficiency=85, years_experience=3.0),
+                        Skill(name="Docker", category="DevOps", proficiency=70, years_experience=1.0),
+                        Skill(name="AWS", category="Cloud", proficiency=75, years_experience=1.5),
+                        Skill(name="Git", category="Tools", proficiency=90, years_experience=3.0)
+                    ]
+                    for skill in default_skills:
+                        db.session.add(skill)
+                    db.session.commit()
+                    print("Default skills added")
+            except Exception as e:
+                print(f"Skills initialization error: {e}")
+                db.session.rollback()
             
-
-            
-            # Initialize GitHub stats
+            # Initialize GitHub stats (optional)
             try:
                 update_github_stats()
-            except:
-                pass  # Ignore GitHub API errors during initialization
-            
-        except Exception as e:
-            app.logger.error(f"Initialization error: {e}")
+                print("GitHub stats updated")
+            except Exception as e:
+                print(f"GitHub stats error (ignored): {e}")
+                
+    except Exception as e:
+        print(f"App initialization error: {e}")
+        raise
 
 # Initialize app for both development and production
-initialize_app()
+try:
+    initialize_app()
+except Exception as e:
+    print(f"Initialization error: {e}")
+    # Continue anyway for basic functionality
 
 if __name__ == "__main__":
     # Development server only
