@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+    <style>
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Navigation -->
+    <nav class="glass-effect p-4 mb-8">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-cyan-400">Advanced Admin Dashboard</h1>
+            <div class="flex space-x-4">
+                <button onclick="clearCache()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded">Clear Cache</button>
+                <button onclick="exportData()" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded">Export Data</button>
+                <a href="/logout" class="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4">
+        <!-- Real-time Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="glass-effect p-6 rounded-lg neon-glow">
+                <h3 class="text-lg font-semibold text-cyan-400">Page Views Today</h3>
+                <p id="pageViews" class="text-3xl font-bold">0</p>
+                <span class="text-sm text-gray-400">Real-time</span>
+            </div>
+            <div class="glass-effect p-6 rounded-lg neon-glow">
+                <h3 class="text-lg font-semibold text-green-400">Unique Visitors</h3>
+                <p id="uniqueVisitors" class="text-3xl font-bold">0</p>
+                <span class="text-sm text-gray-400">Today</span>
+            </div>
+            <div class="glass-effect p-6 rounded-lg neon-glow">
+                <h3 class="text-lg font-semibold text-yellow-400">Avg Response Time</h3>
+                <p id="avgResponseTime" class="text-3xl font-bold">0ms</p>
+                <span class="text-sm text-gray-400">Last hour</span>
+            </div>
+            <div class="glass-effect p-6 rounded-lg neon-glow">
+                <h3 class="text-lg font-semibold text-purple-400">API Requests</h3>
+                <p id="apiRequests" class="text-3xl font-bold">0</p>
+                <span class="text-sm text-gray-400">Today</span>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="glass-effect p-6 rounded-lg">
+                <h3 class="text-xl font-semibold mb-4 text-cyan-400">Traffic Analytics</h3>
+                <canvas id="trafficChart" width="400" height="200"></canvas>
+            </div>
+            <div class="glass-effect p-6 rounded-lg">
+                <h3 class="text-xl font-semibold mb-4 text-green-400">Performance Metrics</h3>
+                <canvas id="performanceChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+
+        <!-- Advanced Features -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- File Upload -->
+            <div class="glass-effect p-6 rounded-lg">
+                <h3 class="text-xl font-semibold mb-4 text-yellow-400">File Upload</h3>
+                <div id="dropZone" class="border-2 border-dashed border-gray-600 rounded-lg p-8 text-center cursor-pointer hover:border-cyan-400 transition-colors">
+                    <p class="text-gray-400">Drag & drop files here or click to select</p>
+                    <input type="file" id="fileInput" class="hidden" multiple>
+                </div>
+                <div id="uploadProgress" class="mt-4 hidden">
+                    <div class="bg-gray-700 rounded-full h-2">
+                        <div id="progressBar" class="bg-cyan-400 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Analytics -->
+            <div class="glass-effect p-6 rounded-lg">
+                <h3 class="text-xl font-semibold mb-4 text-purple-400">Search Analytics</h3>
+                <div id="searchQueries" class="space-y-2 max-h-48 overflow-y-auto">
+                    <!-- Search queries will be populated here -->
+                </div>
+            </div>
+
+            <!-- System Status -->
+            <div class="glass-effect p-6 rounded-lg">
+                <h3 class="text-xl font-semibold mb-4 text-red-400">System Status</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span>Database</span>
+                        <span id="dbStatus" class="px-2 py-1 rounded text-xs bg-green-600">Online</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span>Redis Cache</span>
+                        <span id="redisStatus" class="px-2 py-1 rounded text-xs bg-green-600">Online</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span>WebSocket</span>
+                        <span id="wsStatus" class="px-2 py-1 rounded text-xs bg-green-600">Connected</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Newsletter Management -->
+        <div class="glass-effect p-6 rounded-lg mb-8">
+            <h3 class="text-xl font-semibold mb-4 text-cyan-400">Newsletter Management</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-gray-800 p-4 rounded">
+                    <h4 class="font-semibold">Total Subscribers</h4>
+                    <p id="totalSubscribers" class="text-2xl font-bold text-cyan-400">0</p>
+                </div>
+                <div class="bg-gray-800 p-4 rounded">
+                    <h4 class="font-semibold">Active Subscribers</h4>
+                    <p id="activeSubscribers" class="text-2xl font-bold text-green-400">0</p>
+                </div>
+                <div class="bg-gray-800 p-4 rounded">
+                    <h4 class="font-semibold">This Week</h4>
+                    <p id="weeklySubscribers" class="text-2xl font-bold text-yellow-400">0</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Keys Management -->
+        <div class="glass-effect p-6 rounded-lg mb-8">
+            <h3 class="text-xl font-semibold mb-4 text-green-400">API Keys</h3>
+            <button onclick="generateApiKey()" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded mb-4">Generate New Key</button>
+            <div id="apiKeysList" class="space-y-2">
+                <!-- API keys will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // WebSocket connection
+        const socket = io();
+        
+        socket.on('connect', function() {
+            console.log('Connected to server');
+            document.getElementById('wsStatus').textContent = 'Connected';
+            document.getElementById('wsStatus').className = 'px-2 py-1 rounded text-xs bg-green-600';
+            socket.emit('join_analytics');
+        });
+
+        socket.on('disconnect', function() {
+            console.log('Disconnected from server');
+            document.getElementById('wsStatus').textContent = 'Disconnected';
+            document.getElementById('wsStatus').className = 'px-2 py-1 rounded text-xs bg-red-600';
+        });
+
+        socket.on('analytics_update', function(data) {
+            document.getElementById('pageViews').textContent = data.page_views;
+            document.getElementById('uniqueVisitors').textContent = data.unique_visitors;
+            updateCharts(data);
+        });
+
+        // Charts
+        let trafficChart, performanceChart;
+
+        function initCharts() {
+            const trafficCtx = document.getElementById('trafficChart').getContext('2d');
+            trafficChart = new Chart(trafficCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Page Views',
+                        data: [],
+                        borderColor: 'rgb(34, 197, 94)',
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: { color: 'white' }
+                        }
+                    },
+                    scales: {
+                        x: { ticks: { color: 'white' } },
+                        y: { ticks: { color: 'white' } }
+                    }
+                }
+            });
+
+            const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+            performanceChart = new Chart(performanceCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Response Time (ms)',
+                        data: [],
+                        backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                        borderColor: 'rgb(59, 130, 246)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: { color: 'white' }
+                        }
+                    },
+                    scales: {
+                        x: { ticks: { color: 'white' } },
+                        y: { ticks: { color: 'white' } }
+                    }
+                }
+            });
+        }
+
+        function updateCharts(data) {
+            const now = new Date().toLocaleTimeString();
+            
+            // Update traffic chart
+            trafficChart.data.labels.push(now);
+            trafficChart.data.datasets[0].data.push(data.page_views);
+            
+            if (trafficChart.data.labels.length > 20) {
+                trafficChart.data.labels.shift();
+                trafficChart.data.datasets[0].data.shift();
+            }
+            
+            trafficChart.update('none');
+        }
+
+        // File upload functionality
+        function initFileUpload() {
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('fileInput');
+
+            dropZone.addEventListener('click', () => fileInput.click());
+            
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('border-cyan-400');
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('border-cyan-400');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('border-cyan-400');
+                handleFiles(e.dataTransfer.files);
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                handleFiles(e.target.files);
+            });
+        }
+
+        function handleFiles(files) {
+            for (let file of files) {
+                uploadFile(file);
+            }
+        }
+
+        function uploadFile(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('public', 'true');
+
+            const progressBar = document.getElementById('progressBar');
+            const uploadProgress = document.getElementById('uploadProgress');
+            
+            uploadProgress.classList.remove('hidden');
+
+            fetch('/api/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Upload failed: ' + data.error);
+                } else {
+                    alert('File uploaded successfully!');
+                }
+                uploadProgress.classList.add('hidden');
+            })
+            .catch(error => {
+                console.error('Upload error:', error);
+                alert('Upload failed');
+                uploadProgress.classList.add('hidden');
+            });
+        }
+
+        // Utility functions
+        function clearCache() {
+            if (confirm('Are you sure you want to clear the cache?')) {
+                fetch('/api/cache/clear', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message || 'Cache cleared');
+                })
+                .catch(error => {
+                    console.error('Cache clear error:', error);
+                    alert('Failed to clear cache');
+                });
+            }
+        }
+
+        function exportData() {
+            // Implement data export functionality
+            alert('Data export feature coming soon!');
+        }
+
+        function generateApiKey() {
+            const name = prompt('Enter API key name:');
+            if (name) {
+                // Implement API key generation
+                alert('API key generation feature coming soon!');
+            }
+        }
+
+        // Load analytics data
+        function loadAnalytics() {
+            fetch('/api/analytics', {
+                headers: {
+                    'X-API-Key': 'your-api-key-here' // Replace with actual API key
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Process analytics data
+                console.log('Analytics data:', data);
+            })
+            .catch(error => {
+                console.error('Analytics error:', error);
+            });
+        }
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+            initFileUpload();
+            loadAnalytics();
+        });
+    </script>
+</body>
+</html>

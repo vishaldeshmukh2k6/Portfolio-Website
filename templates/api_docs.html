@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation - Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .code-block {
+            background: #1a1a1a;
+            border-left: 4px solid #00ffff;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-cyan-400 mb-4">Portfolio API Documentation</h1>
+            <p class="text-gray-300 text-lg">Comprehensive API reference for the portfolio website</p>
+        </header>
+
+        <!-- Authentication -->
+        <section class="glass-effect p-6 rounded-lg mb-8">
+            <h2 class="text-2xl font-bold text-cyan-400 mb-4">Authentication</h2>
+            <p class="text-gray-300 mb-4">Most API endpoints require authentication using an API key.</p>
+            
+            <div class="code-block p-4 rounded mb-4">
+                <h3 class="text-lg font-semibold text-yellow-400 mb-2">Header Authentication</h3>
+                <pre class="text-green-400"><code>X-API-Key: your-api-key-here</code></pre>
+            </div>
+            
+            <div class="code-block p-4 rounded">
+                <h3 class="text-lg font-semibold text-yellow-400 mb-2">Query Parameter Authentication</h3>
+                <pre class="text-green-400"><code>GET /api/endpoint?api_key=your-api-key-here</code></pre>
+            </div>
+        </section>
+
+        <!-- Endpoints -->
+        <section class="space-y-8">
+            <!-- Search API -->
+            <div class="glass-effect p-6 rounded-lg">
+                <h2 class="text-2xl font-bold text-green-400 mb-4">Search API</h2>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold text-cyan-400 mb-2">Advanced Search</h3>
+                    <div class="bg-gray-800 p-4 rounded mb-4">
+                        <span class="bg-green-600 text-white px-2 py-1 rounded text-sm mr-2">GET</span>
+                        <code class="text-cyan-400">/api/search</code>
+                    </div>
+                    
+                    <h4 class="text-lg font-semibold text-yellow-400 mb-2">Parameters</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-gray-600">
+                                    <th class="text-left p-2">Parameter</th>
+                                    <th class="text-left p-2">Type</th>
+                                    <th class="text-left p-2">Required</th>
+                                    <th class="text-left p-2">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-gray-700">
+                                    <td class="p-2 text-cyan-400">q</td>
+                                    <td class="p-2">string</td>
+                                    <td class="p-2 text-red-400">Yes</td>
+                                    <td class="p-2">Search query (min 2 characters)</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="p-2 text-cyan-400">types</td>
+                                    <td class="p-2">array</td>
+                                    <td class="p-2 text-gray-400">No</td>
+                                    <td class="p-2">Content types: blog, project, snippet</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="p-2 text-cyan-400">limit</td>
+                                    <td class="p-2">integer</td>
+                                    <td class="p-2 text-gray-400">No</td>
+                                    <td class="p-2">Max results (default: 20, max: 50)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <h4 class="text-lg font-semibold text-yellow-400 mb-2 mt-4">Example Request</h4>
+                    <div class="code-block p-4 rounded">
+                        <pre class="text-green-400"><code>curl -X GET "https://yoursite.com/api/search?q=python&types=blog,snippet&limit=10"</code></pre>
+                    </div>
+                    
+                    <h4 class="text-lg font-semibold text-yellow-400 mb-2 mt-4">Example Response</h4>
+                    <div class="code-block p-4 rounded">
+                        <pre class="text-green-400"><code>{
+  "results": [
+    {
+      "type": "blog",
+      "id": 1,
+      "title": "Advanced Python Techniques",
+      "content": "Learn advanced Python programming...",
+      "url": "/blog/advanced-python-techniques",
+      "score": 15,
+      "date": "2024-01-15T10:30:00Z"
+    }
+  ],
+  "total": 1,
+  "query": "python"
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics API -->
+            <div class="glass-effect p-6 rounded-lg">
+                <h2 class="text-2xl font-bold text-purple-400 mb-4">Analytics API</h2>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold text-cyan-400 mb-2">Get Analytics Data</h3>
+                    <div class="bg-gray-800 p-4 rounded mb-4">
+                        <span class="bg-green-600 text-white px-2 py-1 rounded text-sm mr-2">GET</span>
+                        <code class="text-cyan-400">/api/analytics</code>
+                        <span class="bg-red-600 text-white px-2 py-1 rounded text-sm ml-2">Requires API Key</span>
+                    </div>
+                    
+                    <h4 class="text-lg font-semibold text-yellow-400 mb-2">Parameters</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-gray-600">
+                                    <th class="text-left p-2">Parameter</th>
+                                    <th class="text-left p-2">Type</th>
+                                    <th class="text-left p-2">Required</th>
+                                    <th class="text-left p-2">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-gray-700">
+                                    <td class="p-2 text-cyan-400">days</td>
+                                    <td class="p-2">integer</td>
+                                    <td class="p-2 text-gray-400">No</td>
+                                    <td class="p-2">Number of days (default: 7, max: 30)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <h4 class="text-lg font-semibold text-yellow-400 mb-2 mt-4">Example Response</h4>
+                    <div class="code-block p-4 rounded">
+                        <pre class="text-green-400"><code>{
+  "performance": [
+    {
+      "date": "2024-01-15",
+      "avg_response_time": 125.5,
+      "request_count": 1250
+    }
+  ],
+  "visitors": [
+    {
+      "date": "2024-01-15",
+      "page_views": 850,
+      "unique_visitors": 320
+    }
+  ]
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Newsletter API -->
+            <div class="glass-effect p-6 rounded-lg">
+                <h2 class="text-2xl font-bold text-yellow-400 mb-4">Newsletter API</h2>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold text-cyan-400 mb-2">Subscribe to Newsletter</h3>
+                    <div class="bg-gray-800 p-4 rounded mb-4">
+                        <span class="bg-blue-600 text-white px-2 py-1 rounded text-sm mr-2">POST</span>
+                        <code class="text-cyan-400">/api/newsletter/subscribe</code>
+                    </div>
+                    
+                    <h4 class="text-lg font-semibold text-yellow-400 mb-2">Request Body</h4>
+                    <div class="code-block p-4 rounded mb-4">
+                        <pre class="text-green-400"><code>{
+  "email": "user@example.com",
+  "name": "John Doe"
+}</code></pre>
+                    </div>
+                    
+                    <h4 class="text-lg font-semibold text-yellow-400 mb-2">Example Response</h4>
+                    <div class="code-block p-4 rounded">
+                        <pre class="text-green-400"><code>{
+  "message": "Subscription successful"
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- File Upload API -->
+            <div class="glass-effect p-6 rounded-lg">
+                <h2 class="text-2xl font-bold text-red-400 mb-4">File Upload API</h2>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold text-cyan-400 mb-2">Upload File</h3>
+                    <div class="bg-gray-800 p-4 rounded mb-4">
+                        <span class="bg-blue-600 text-white px-2 py-1 rounded text-sm mr-2">POST</span>
+                        <code class="text-cyan-400">/api/upload</code>
+                        <span class="bg-red-600 text-white px-2 py-1 rounded text-sm ml-2">Admin Only</span>
+                    </div>
+                    
+                    <h4 class="text-lg font-semibold text-yellow-400 mb-2">Form Data</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-gray-600">
+                                    <th class="text-left p-2">Field</th>
+                                    <th class="text-left p-2">Type</th>
+                                    <th class="text-left p-2">Required</th>
+                                    <th class="text-left p-2">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-gray-700">
+                                    <td class="p-2 text-cyan-400">file</td>
+                                    <td class="p-2">file</td>
+                                    <td class="p-2 text-red-400">Yes</td>
+                                    <td class="p-2">File to upload (max 16MB)</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="p-2 text-cyan-400">public</td>
+                                    <td class="p-2">boolean</td>
+                                    <td class="p-2 text-gray-400">No</td>
+                                    <td class="p-2">Make file publicly accessible</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <h4 class="text-lg font-semibold text-yellow-400 mb-2 mt-4">Supported File Types</h4>
+                    <div class="bg-gray-800 p-4 rounded mb-4">
+                        <p class="text-gray-300">Images: PNG, JPG, JPEG, GIF</p>
+                        <p class="text-gray-300">Documents: PDF, TXT, DOC, DOCX</p>
+                        <p class="text-gray-300">Archives: ZIP</p>
+                    </div>
+                    
+                    <h4 class="text-lg font-semibold text-yellow-400 mb-2">Example Response</h4>
+                    <div class="code-block p-4 rounded">
+                        <pre class="text-green-400"><code>{
+  "message": "File uploaded successfully",
+  "file_id": 123,
+  "filename": "abc123_document.pdf",
+  "size": 1048576,
+  "url": "/api/files/123"
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cache Management -->
+            <div class="glass-effect p-6 rounded-lg">
+                <h2 class="text-2xl font-bold text-orange-400 mb-4">Cache Management</h2>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold text-cyan-400 mb-2">Clear Cache</h3>
+                    <div class="bg-gray-800 p-4 rounded mb-4">
+                        <span class="bg-blue-600 text-white px-2 py-1 rounded text-sm mr-2">POST</span>
+                        <code class="text-cyan-400">/api/cache/clear</code>
+                        <span class="bg-red-600 text-white px-2 py-1 rounded text-sm ml-2">Admin Only</span>
+                    </div>
+                    
+                    <h4 class="text-lg font-semibold text-yellow-400 mb-2">Example Response</h4>
+                    <div class="code-block p-4 rounded">
+                        <pre class="text-green-400"><code>{
+  "message": "Cache cleared successfully"
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rate Limits -->
+        <section class="glass-effect p-6 rounded-lg mt-8">
+            <h2 class="text-2xl font-bold text-red-400 mb-4">Rate Limits</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-semibold text-cyan-400 mb-2">Default Limits</h3>
+                    <ul class="text-gray-300 space-y-1">
+                        <li>• 200 requests per day</li>
+                        <li>• 50 requests per hour</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-cyan-400 mb-2">Endpoint Specific</h3>
+                    <ul class="text-gray-300 space-y-1">
+                        <li>• Search: 50 per hour</li>
+                        <li>• Contact: 5 per minute</li>
+                        <li>• Upload: 10 per minute</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Error Codes -->
+        <section class="glass-effect p-6 rounded-lg mt-8">
+            <h2 class="text-2xl font-bold text-red-400 mb-4">Error Codes</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-gray-600">
+                            <th class="text-left p-2">Code</th>
+                            <th class="text-left p-2">Status</th>
+                            <th class="text-left p-2">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-gray-700">
+                            <td class="p-2 text-red-400">400</td>
+                            <td class="p-2">Bad Request</td>
+                            <td class="p-2">Invalid request parameters</td>
+                        </tr>
+                        <tr class="border-b border-gray-700">
+                            <td class="p-2 text-red-400">401</td>
+                            <td class="p-2">Unauthorized</td>
+                            <td class="p-2">Missing or invalid API key</td>
+                        </tr>
+                        <tr class="border-b border-gray-700">
+                            <td class="p-2 text-red-400">403</td>
+                            <td class="p-2">Forbidden</td>
+                            <td class="p-2">Insufficient permissions</td>
+                        </tr>
+                        <tr class="border-b border-gray-700">
+                            <td class="p-2 text-red-400">404</td>
+                            <td class="p-2">Not Found</td>
+                            <td class="p-2">Resource not found</td>
+                        </tr>
+                        <tr class="border-b border-gray-700">
+                            <td class="p-2 text-red-400">429</td>
+                            <td class="p-2">Too Many Requests</td>
+                            <td class="p-2">Rate limit exceeded</td>
+                        </tr>
+                        <tr class="border-b border-gray-700">
+                            <td class="p-2 text-red-400">500</td>
+                            <td class="p-2">Internal Server Error</td>
+                            <td class="p-2">Server error occurred</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
