@@ -10,6 +10,9 @@ Flask-WTF==1.1.1
 Flask-Talisman==1.1.0
 Werkzeug==2.3.7
 
+# Production WSGI Server
+gunicorn==21.2.0
+
 # HTTP Requests
 requests==2.31.0
 

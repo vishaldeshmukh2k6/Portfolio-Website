@@ -49,10 +49,11 @@ talisman = Talisman(
     }
 )
 
-# Rate limiting
+# Rate limiting with proper storage
 limiter = Limiter(
     key_func=get_remote_address,
-    default_limits=["200 per day", "50 per hour"]
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri="memory://"
 )
 limiter.init_app(app)
 
@@ -967,15 +968,11 @@ def initialize_app():
         except Exception as e:
             app.logger.error(f"Initialization error: {e}")
 
+# Initialize app for both development and production
+initialize_app()
+
 if __name__ == "__main__":
-    initialize_app()
-    
-    # Production server configuration
+    # Development server only
     port = int(os.getenv('PORT', 5000))
     host = os.getenv('HOST', '0.0.0.0')
-    
-    # Run Flask app
     app.run(debug=False, host=host, port=port)
-else:
-    # For production WSGI servers
-    initialize_app()
