@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Vishal Deshmukh</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        body.dark { background-color: #0a192f; color: #ccd6f6; }
+        .glass-effect {
+            background: rgba(23, 49, 85, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-text { color: #64ffda; }
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="leading-relaxed antialiased dark">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass-effect">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="/" class="text-2xl font-bold neon-text">VD</a>
+            <div class="flex space-x-8 items-center">
+                <a href="/" class="hover:text-neon-text transition duration-300">Home</a>
+                <a href="/blog" class="text-neon-text">Blog</a>
+                <a href="/code-snippets" class="hover:text-neon-text transition duration-300">Code</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 md:px-16 lg:px-24 pt-24">
+        <!-- Hero Section -->
+        <section class="py-12">
+            <h1 class="text-4xl md:text-6xl font-bold text-slate-200 mb-4">Technical Blog</h1>
+            <p class="text-xl text-slate-400 max-w-2xl">
+                Sharing insights, tutorials, and experiences from my journey as a software developer.
+            </p>
+        </section>
+
+        <!-- Search and Filter -->
+        <section class="py-8">
+            <div class="flex flex-col md:flex-row gap-4 mb-8">
+                <div class="flex-1">
+                    <input type="text" id="search-input" placeholder="Search posts..." 
+                           value="{{ current_search or '' }}"
+                           class="w-full px-4 py-3 rounded-lg bg-slate-800 text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-neon-text">
+                </div>
+                <div class="md:w-48">
+                    <select id="tag-filter" class="w-full px-4 py-3 rounded-lg bg-slate-800 text-slate-200 focus:outline-none focus:ring-2 focus:ring-neon-text">
+                        <option value="">All Tags</option>
+                        {% for tag in all_tags %}
+                        <option value="{{ tag }}" {% if tag == current_tag %}selected{% endif %}>{{ tag }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- Blog Posts -->
+        <section class="py-8">
+            {% if posts.items %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for post in posts.items %}
+                <article class="glass-effect rounded-lg p-6 hover:scale-105 transition-transform duration-300">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-sm text-slate-400">{{ post.created_at.strftime('%B %d, %Y') }}</span>
+                        <span class="text-sm text-neon-text">{{ post.read_time }} min read</span>
+                    </div>
+                    
+                    <h2 class="text-xl font-bold text-slate-200 mb-3 hover:text-neon-text transition-colors">
+                        <a href="/blog/{{ post.slug }}">{{ post.title }}</a>
+                    </h2>
+                    
+                    <p class="text-slate-400 mb-4 line-clamp-3">
+                        {{ post.excerpt or post.content[:150] + '...' }}
+                    </p>
+                    
+                    {% if post.tags %}
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        {% for tag in post.tags.split(',') %}
+                        <span class="px-2 py-1 text-xs bg-slate-700 text-slate-300 rounded">{{ tag.strip() }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="flex items-center justify-between">
+                        <a href="/blog/{{ post.slug }}" class="text-neon-text hover:underline">Read More →</a>
+                        <div class="flex items-center text-slate-400 text-sm">
+                            <i class="fa-solid fa-eye mr-1"></i>
+                            {{ post.views }}
+                        </div>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if posts.pages > 1 %}
+            <div class="flex justify-center mt-12">
+                <nav class="flex space-x-2">
+                    {% if posts.has_prev %}
+                    <a href="{{ url_for('blog', page=posts.prev_num, search=current_search, tag=current_tag) }}" 
+                       class="px-4 py-2 bg-slate-800 text-slate-200 rounded hover:bg-slate-700">Previous</a>
+                    {% endif %}
+                    
+                    {% for page_num in posts.iter_pages() %}
+                        {% if page_num %}
+                            {% if page_num != posts.page %}
+                            <a href="{{ url_for('blog', page=page_num, search=current_search, tag=current_tag) }}" 
+                               class="px-4 py-2 bg-slate-800 text-slate-200 rounded hover:bg-slate-700">{{ page_num }}</a>
+                            {% else %}
+                            <span class="px-4 py-2 bg-neon-text text-slate-900 rounded">{{ page_num }}</span>
+                            {% endif %}
+                        {% else %}
+                        <span class="px-4 py-2">...</span>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if posts.has_next %}
+                    <a href="{{ url_for('blog', page=posts.next_num, search=current_search, tag=current_tag) }}" 
+                       class="px-4 py-2 bg-slate-800 text-slate-200 rounded hover:bg-slate-700">Next</a>
+                    {% endif %}
+                </nav>
+            </div>
+            {% endif %}
+            {% else %}
+            <div class="text-center py-12">
+                <i class="fa-solid fa-search text-6xl text-slate-600 mb-4"></i>
+                <h3 class="text-2xl font-bold text-slate-300 mb-2">No posts found</h3>
+                <p class="text-slate-400">Try adjusting your search or filter criteria.</p>
+            </div>
+            {% endif %}
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-6 border-t border-slate-700 mt-12">
+        <p class="text-sm text-slate-500">
+            © 2024 Vishal Deshmukh. All rights reserved. | 
+            <a href="/terms" class="text-neon-text hover:underline">Terms of Service</a> | 
+            <a href="mailto:vishaldeshmukh143@gmail.com" class="text-neon-text hover:underline">Contact</a>
+        </p>
+    </footer>
+
+    <script>
+        // Search functionality
+        const searchInput = document.getElementById('search-input');
+        const tagFilter = document.getElementById('tag-filter');
+        
+        function updateURL() {
+            const search = searchInput.value;
+            const tag = tagFilter.value;
+            const params = new URLSearchParams();
+            
+            if (search) params.set('search', search);
+            if (tag) params.set('tag', tag);
+            
+            window.location.href = '/blog?' + params.toString();
+        }
+        
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') updateURL();
+        });
+        
+        tagFilter.addEventListener('change', updateURL);
+    </script>
+</body>
+</html>
