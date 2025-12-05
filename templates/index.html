@@ -53,6 +53,37 @@
         .typed-cursor {
             color: #64ffda;
         }
+        .skill-bar {
+            background: linear-gradient(90deg, #64ffda 0%, #64ffda var(--progress), transparent var(--progress));
+            transition: all 0.8s ease;
+            width: 0%;
+        }
+        .github-stat {
+            background: linear-gradient(135deg, rgba(100, 255, 218, 0.1) 0%, rgba(100, 255, 218, 0.05) 100%);
+            border: 1px solid rgba(100, 255, 218, 0.2);
+        }
+        .search-container {
+            position: relative;
+        }
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(100, 255, 218, 0.2);
+            border-radius: 0.5rem;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
     </style>
 </head>
 <body class="leading-relaxed antialiased dark">
@@ -62,10 +93,10 @@
             <a href="/" class="text-2xl font-bold neon-text">VD</a>
             <div class="hidden md:flex space-x-8 items-center">
                 <a href="#about" class="hover:text-neon-text transition duration-300">01. About</a>
-                <a href="#experience" class="hover:text-neon-text transition duration-300">02. Experience</a>
-                <a href="#projects" class="hover:text-neon-text transition duration-300">03. Projects</a>
-                <a href="#achievements" class="hover:text-neon-text transition duration-300">04. Achievements</a>
-                <a href="#contact" class="hover:text-neon-text transition duration-300">05. Contact</a>
+                <a href="#projects" class="hover:text-neon-text transition duration-300">02. Projects</a>
+                <a href="#blog" class="hover:text-neon-text transition duration-300">03. Blog</a>
+                <a href="#contact" class="hover:text-neon-text transition duration-300">04. Contact</a>
+                <a href="/code-snippets" class="hover:text-neon-text transition duration-300">Code</a>
                 <a href="{{ url_for('static', filename='resume.pdf') }}" target="_blank"
                     class="border border-neon-text text-neon-text px-4 py-2 rounded-md hover:bg-neon-text hover:bg-opacity-10 transition duration-300">Resume</a>
                 <!-- Theme Toggle -->
@@ -83,10 +114,10 @@
         <div id="mobile-menu" class="hidden md:hidden bg-slate-900 absolute top-full left-0 w-full">
             <div class="flex flex-col items-center space-y-4 py-4">
                 <a href="#about" class="hover:text-neon-text transition duration-300">01. About</a>
-                <a href="#experience" class="hover:text-neon-text transition duration-300">02. Experience</a>
-                <a href="#projects" class="hover:text-neon-text transition duration-300">03. Projects</a>
-                <a href="#achievements" class="hover:text-neon-text transition duration-300">04. Achievements</a>
-                <a href="#contact" class="hover:text-neon-text transition duration-300">05. Contact</a>
+                <a href="#projects" class="hover:text-neon-text transition duration-300">02. Projects</a>
+                <a href="#blog" class="hover:text-neon-text transition duration-300">03. Blog</a>
+                <a href="#contact" class="hover:text-neon-text transition duration-300">04. Contact</a>
+                <a href="/code-snippets" class="hover:text-neon-text transition duration-300">Code</a>
                 <a href="{{ url_for('static', filename='resume.pdf') }}" target="_blank"
                     class="border border-neon-text text-neon-text px-4 py-2 rounded-md hover:bg-neon-text hover:bg-opacity-10 transition duration-300">Resume</a>
                 <!-- Mobile Theme Toggle -->
@@ -130,6 +161,42 @@
                 data-aos="fade-up" data-aos-delay="400">
                 Check out my work!
             </a>
+        </section>
+
+        <!-- GitHub Stats Section -->
+        <section class="py-12">
+            {% if github_stats %}
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12" data-aos="fade-up">
+                <div class="github-stat p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-neon-text">{{ github_stats.public_repos }}</div>
+                    <div class="text-sm text-slate-400">Repositories</div>
+                </div>
+                <div class="github-stat p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-neon-text">{{ github_stats.total_stars }}</div>
+                    <div class="text-sm text-slate-400">Stars Earned</div>
+                </div>
+                <div class="github-stat p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-neon-text">{{ github_stats.followers }}</div>
+                    <div class="text-sm text-slate-400">Followers</div>
+                </div>
+                <div class="github-stat p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-neon-text">{{ github_stats.contributions_last_year or '500+' }}</div>
+                    <div class="text-sm text-slate-400">Contributions</div>
+                </div>
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- Search Section -->
+        <section class="py-8">
+            <div class="max-w-2xl mx-auto search-container" data-aos="fade-up">
+                <div class="relative">
+                    <input type="text" id="global-search" placeholder="Search projects, blog posts, code snippets..." 
+                           class="w-full px-6 py-4 pl-12 rounded-lg bg-slate-800 text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-neon-text">
+                    <i class="fa-solid fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                </div>
+                <div id="search-results" class="search-results hidden"></div>
+            </div>
         </section>
 
         <!-- About Section -->
@@ -207,9 +274,66 @@
             </div>
         </section>
 
+        <!-- Skills Section -->
+        <section id="skills" class="py-24">
+            <h2 class="section-heading" data-aos="fade-up"><span class="neon-text mr-2">02.</span> Technical Skills</h2>
+            
+            {% if skills %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8" data-aos="fade-up" data-aos-delay="100">
+                {% set skill_categories = {} %}
+                {% for skill in skills %}
+                    {% if skill.category not in skill_categories %}
+                        {% set _ = skill_categories.update({skill.category: []}) %}
+                    {% endif %}
+                    {% set _ = skill_categories[skill.category].append(skill) %}
+                {% endfor %}
+                
+                {% for category, category_skills in skill_categories.items() %}
+                <div class="glass-effect p-6 rounded-lg">
+                    <h3 class="text-xl font-bold text-slate-200 mb-6 flex items-center">
+                        {% if category == 'Frontend' %}
+                        <i class="fa-solid fa-palette text-neon-text mr-3"></i>
+                        {% elif category == 'Backend' %}
+                        <i class="fa-solid fa-server text-neon-text mr-3"></i>
+                        {% elif category == 'Database' %}
+                        <i class="fa-solid fa-database text-neon-text mr-3"></i>
+                        {% elif category == 'DevOps' %}
+                        <i class="fa-solid fa-cogs text-neon-text mr-3"></i>
+                        {% elif category == 'Cloud' %}
+                        <i class="fa-solid fa-cloud text-neon-text mr-3"></i>
+                        {% else %}
+                        <i class="fa-solid fa-tools text-neon-text mr-3"></i>
+                        {% endif %}
+                        {{ category }}
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        {% for skill in category_skills | sort(attribute='proficiency', reverse=true) %}
+                        <div class="skill-item">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-slate-300 font-medium">{{ skill.name }}</span>
+                                <div class="flex items-center text-sm text-slate-400">
+                                    <span class="mr-2">{{ skill.proficiency }}%</span>
+                                    <span class="text-xs">({{ skill.years_experience }}y)</span>
+                                </div>
+                            </div>
+                            <div class="w-full bg-slate-700 rounded-full h-2 overflow-hidden">
+                                <div class="skill-bar h-2 rounded-full bg-gradient-to-r from-neon-text to-blue-400" 
+                                     data-progress="{{ skill.proficiency }}"
+                                     style="width: 0%; transition: width 1s ease-in-out;"></div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </section>
+
         <!-- Experience Section -->
         <section id="experience" class="py-24">
-            <h2 class="section-heading" data-aos="fade-up"><span class="neon-text mr-2">02.</span> Where I've Worked
+            <h2 class="section-heading" data-aos="fade-up"><span class="neon-text mr-2">03.</span> Where I've Worked
             </h2>
             <div class="max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
                 <div class="relative border-l-2 border-slate-700 ml-4">
@@ -251,7 +375,7 @@
 
         <!-- Projects Section -->
         <section id="projects" class="py-24">
-            <h2 class="section-heading"><span class="neon-text mr-2">03.</span> Some Things I've Built</h2>
+            <h2 class="section-heading"><span class="neon-text mr-2">04.</span> Some Things I've Built</h2>
             <div class="grid gap-12 mt-8">
                 {% for p in projects %}
                 <div class="p-6 rounded-lg glass-effect">
@@ -272,11 +396,109 @@
                 </div>
                 {% endfor %}
             </div>
+            
+            <!-- View All Projects -->
+            <div class="text-center mt-12" data-aos="fade-up">
+                <a href="#projects" onclick="document.getElementById('projects').scrollIntoView({behavior: 'smooth'})" class="inline-block border border-neon-text text-neon-text px-8 py-3 rounded-md hover:bg-neon-text hover:bg-opacity-10 transition duration-300">
+                    View All Projects
+                </a>
+            </div>
+        </section>
+
+        <!-- Blog Section -->
+        <section id="blog" class="py-24">
+            <h2 class="section-heading" data-aos="fade-up"><span class="neon-text mr-2">05.</span> Latest Blog Posts</h2>
+            
+            {% if featured_posts %}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+                {% for post in featured_posts %}
+                <article class="glass-effect rounded-lg p-6 hover:scale-105 transition-transform duration-300" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-sm text-slate-400">{{ post.created_at.strftime('%B %d, %Y') }}</span>
+                        <span class="text-sm text-neon-text">{{ post.read_time }} min read</span>
+                    </div>
+                    
+                    <h3 class="text-xl font-bold text-slate-200 mb-3 hover:text-neon-text transition-colors">
+                        <a href="/blog/{{ post.slug }}">{{ post.title }}</a>
+                    </h3>
+                    
+                    <p class="text-slate-400 mb-4 line-clamp-3">
+                        {{ post.excerpt or post.content[:150] + '...' }}
+                    </p>
+                    
+                    {% if post.tags %}
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        {% for tag in post.tags.split(',')[:3] %}
+                        <span class="px-2 py-1 text-xs bg-slate-700 text-slate-300 rounded">{{ tag.strip() }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="flex items-center justify-between">
+                        <a href="/blog/{{ post.slug }}" class="text-neon-text hover:underline">Read More →</a>
+                        <div class="flex items-center text-slate-400 text-sm">
+                            <i class="fa-solid fa-eye mr-1"></i>
+                            {{ post.views }}
+                        </div>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+            
+            <!-- View All Blog Posts -->
+            <div class="text-center mt-12" data-aos="fade-up">
+                <a href="/blog" class="inline-block border border-neon-text text-neon-text px-8 py-3 rounded-md hover:bg-neon-text hover:bg-opacity-10 transition duration-300">
+                    View All Posts
+                </a>
+            </div>
+            {% else %}
+            <div class="text-center py-12" data-aos="fade-up">
+                <i class="fa-solid fa-blog text-6xl text-slate-600 mb-4"></i>
+                <h3 class="text-2xl font-bold text-slate-300 mb-2">Blog Coming Soon</h3>
+                <p class="text-slate-400">I'm working on some exciting technical articles. Stay tuned!</p>
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- Code Snippets Section -->
+        <section class="py-12">
+            {% if code_snippets %}
+            <div class="text-center mb-12" data-aos="fade-up">
+                <h3 class="text-2xl font-bold text-slate-200 mb-4">Featured Code Snippets</h3>
+                <p class="text-slate-400">Useful code examples and utilities from my development work</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {% for snippet in code_snippets %}
+                <div class="glass-effect rounded-lg overflow-hidden" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+                    <div class="p-4 border-b border-slate-700">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-bold text-slate-200">{{ snippet.title }}</h4>
+                            <span class="px-2 py-1 text-xs bg-neon-text bg-opacity-20 text-neon-text rounded">{{ snippet.language }}</span>
+                        </div>
+                        {% if snippet.description %}
+                        <p class="text-sm text-slate-400">{{ snippet.description[:80] + '...' if snippet.description|length > 80 else snippet.description }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="p-4 bg-slate-800 bg-opacity-50">
+                        <pre class="text-sm text-slate-300 overflow-x-auto"><code>{{ snippet.code[:100] + '...' if snippet.code|length > 100 else snippet.code }}</code></pre>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- View All Snippets -->
+            <div class="text-center mt-12" data-aos="fade-up">
+                <a href="/code-snippets" class="inline-block border border-neon-text text-neon-text px-8 py-3 rounded-md hover:bg-neon-text hover:bg-opacity-10 transition duration-300">
+                    View All Snippets
+                </a>
+            </div>
+            {% endif %}
         </section>
 
         <!-- Achievements Section -->
         <section id="achievements" class="py-24">
-            <h2 class="section-heading"><span class="neon-text mr-2">04.</span> Achievements & Certifications</h2>
+            <h2 class="section-heading"><span class="neon-text mr-2">06.</span> Achievements & Certifications</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
                 {% for c in certificates %}
                 <div class="p-6 rounded-lg glass-effect hover:scale-105 transition">
@@ -298,7 +520,7 @@
                 class="absolute inset-0 -z-10 bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 opacity-10 blur-3xl dark:from-purple-400 dark:via-pink-400 dark:to-indigo-400">
             </div>
 
-            <h2 class="text-lg font-semibold tracking-widest text-neon-text dark:text-neon-text-dark uppercase">04.
+            <h2 class="text-lg font-semibold tracking-widest text-neon-text dark:text-neon-text-dark uppercase">07.
                 What's Next?</h2>
             <h3 class="text-4xl md:text-5xl font-extrabold text-slate-800 dark:text-slate-200 mt-4">Get In Touch</h3>
             <p class="mt-6 text-slate-600 dark:text-slate-400 text-lg leading-relaxed">
@@ -309,22 +531,45 @@
             <!-- Contact Form -->
             <form action="{{ url_for('contact') }}" method="POST"
                 class="mt-10 space-y-6 text-left bg-slate-100/60 dark:bg-slate-900/50 backdrop-blur-md p-8 rounded-2xl shadow-lg border border-slate-300 dark:border-slate-700">
-                <div>
-                    <label for="name" class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Name</label>
-                    <input type="text" id="name" name="name" required
-                        class="w-full px-5 py-3 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-neon-text dark:focus:ring-neon-text transition-all duration-300">
-                </div>
+                {{ csrf_token() }}
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="name" class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Name</label>
+                        <input type="text" id="name" name="name" required maxlength="100"
+                            class="w-full px-5 py-3 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-neon-text dark:focus:ring-neon-text transition-all duration-300">
+                    </div>
 
-                <div>
-                    <label for="email" class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Email</label>
-                    <input type="email" id="email" name="email" required
-                        class="w-full px-5 py-3 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-neon-text dark:focus:ring-neon-text transition-all duration-300">
+                    <div>
+                        <label for="email" class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Email</label>
+                        <input type="email" id="email" name="email" required maxlength="150"
+                            class="w-full px-5 py-3 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-neon-text dark:focus:ring-neon-text transition-all duration-300">
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="subject" class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Subject</label>
+                        <input type="text" id="subject" name="subject" required maxlength="200"
+                            class="w-full px-5 py-3 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-neon-text dark:focus:ring-neon-text transition-all duration-300">
+                    </div>
+                    
+                    <div>
+                        <label for="category" class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Category</label>
+                        <select id="category" name="category" 
+                            class="w-full px-5 py-3 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-neon-text dark:focus:ring-neon-text transition-all duration-300">
+                            <option value="general">General Inquiry</option>
+                            <option value="project">Project Discussion</option>
+                            <option value="job">Job Opportunity</option>
+                            <option value="collaboration">Collaboration</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div>
                     <label for="message"
                         class="block text-slate-700 dark:text-slate-300 font-medium mb-1">Message</label>
-                    <textarea id="message" name="message" rows="5" required
+                    <textarea id="message" name="message" rows="5" required maxlength="2000"
                         class="w-full px-5 py-3 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-neon-text dark:focus:ring-neon-text transition-all duration-300"></textarea>
                 </div>
 
@@ -364,8 +609,18 @@
             <a href="/admin" target="_blank"
                 class="text-slate-400 hover:text-neon-text transition duration-300"><i
                     class="fa-solid fa-user-shield text-gray-700 text-xl"></i></a>
+            <a href="/blog"
+                class="text-slate-400 hover:text-neon-text transition duration-300"><i
+                    class="fa-solid fa-blog"></i></a>
+            <a href="/code-snippets"
+                class="text-slate-400 hover:text-neon-text transition duration-300"><i
+                    class="fa-solid fa-code"></i></a>
         </div>
         <p class="text-sm text-slate-500">Design inspired by Brittany Chiang. Built by <b>Vishal Deshmukh</b>.</p>
+        <p class="text-sm text-slate-500 mt-2">
+            © 2024 All rights reserved | 
+            <a href="/terms" class="text-slate-400 hover:text-neon-text transition duration-300">Terms</a>
+        </p>
     </footer>
 
 
@@ -377,11 +632,88 @@
             AOS.init({ duration: 800, once: true });
 
             new Typed('#typed-text', {
-                strings: ["I craft scalable APIs.", "I build backend solutions.", "I love Python & Flask."],
+                strings: ["I craft scalable APIs.", "I build backend solutions.", "I love Python & Flask.", "I create innovative web apps."],
                 typeSpeed: 50,
                 backSpeed: 25,
                 loop: true,
                 smartBackspace: true,
+            });
+            
+            // Animate skill bars when they come into view
+            const observerOptions = {
+                threshold: 0.5,
+                rootMargin: '0px 0px -100px 0px'
+            };
+            
+            const skillObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const skillBars = entry.target.querySelectorAll('.skill-bar');
+                        skillBars.forEach(bar => {
+                            const progress = bar.dataset.progress;
+                            setTimeout(() => {
+                                bar.style.width = progress + '%';
+                            }, 200);
+                        });
+                    }
+                });
+            }, observerOptions);
+            
+            const skillsSection = document.getElementById('skills');
+            if (skillsSection) {
+                skillObserver.observe(skillsSection);
+            }
+            
+            // Global search functionality
+            const searchInput = document.getElementById('global-search');
+            const searchResults = document.getElementById('search-results');
+            let searchTimeout;
+            
+            searchInput.addEventListener('input', (e) => {
+                clearTimeout(searchTimeout);
+                const query = e.target.value.trim();
+                
+                if (query.length < 2) {
+                    searchResults.classList.add('hidden');
+                    return;
+                }
+                
+                searchTimeout = setTimeout(() => {
+                    fetch(`/api/search?q=${encodeURIComponent(query)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            displaySearchResults(data.results);
+                        })
+                        .catch(error => {
+                            console.error('Search error:', error);
+                        });
+                }, 300);
+            });
+            
+            function displaySearchResults(results) {
+                if (results.length === 0) {
+                    searchResults.innerHTML = '<div class="p-4 text-slate-400 text-center">No results found</div>';
+                } else {
+                    searchResults.innerHTML = results.map(result => `
+                        <div class="p-4 hover:bg-slate-700 cursor-pointer border-b border-slate-700 last:border-b-0">
+                            <a href="${result.url}" class="block">
+                                <div class="flex items-center justify-between mb-1">
+                                    <h4 class="font-medium text-slate-200">${result.title}</h4>
+                                    <span class="text-xs px-2 py-1 bg-neon-text bg-opacity-20 text-neon-text rounded">${result.type}</span>
+                                </div>
+                                <p class="text-sm text-slate-400">${result.description}</p>
+                            </a>
+                        </div>
+                    `).join('');
+                }
+                searchResults.classList.remove('hidden');
+            }
+            
+            // Hide search results when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                    searchResults.classList.add('hidden');
+                }
             });
 
             const menuBtn = document.getElementById('mobile-menu-btn');

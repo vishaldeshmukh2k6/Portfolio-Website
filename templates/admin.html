@@ -7,6 +7,10 @@
     <title>Admin Dashboard</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        .neon-text { color: #64ffda; }
+    </style>
 </head>
 
 <body class="bg-gray-900 text-white min-h-screen flex flex-col">
@@ -29,6 +33,414 @@
 
     <!-- Main Content -->
     <main class="flex-1 p-8 space-y-12">
+        
+        <!-- Dashboard Stats -->
+        <section>
+            <h2 class="text-2xl font-bold mb-6">Dashboard Overview</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-gradient-to-r from-blue-600 to-blue-700 p-6 rounded-lg shadow-lg">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-blue-100 text-sm">Total Projects</p>
+                            <p class="text-3xl font-bold text-white">{{ stats.total_projects }}</p>
+                        </div>
+                        <i class="fas fa-project-diagram text-3xl text-blue-200"></i>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-r from-green-600 to-green-700 p-6 rounded-lg shadow-lg">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-green-100 text-sm">Blog Posts</p>
+                            <p class="text-3xl font-bold text-white">{{ stats.total_blog_posts }}</p>
+                        </div>
+                        <i class="fas fa-blog text-3xl text-green-200"></i>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-r from-purple-600 to-purple-700 p-6 rounded-lg shadow-lg">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-purple-100 text-sm">Skills</p>
+                            <p class="text-3xl font-bold text-white">{{ stats.total_skills }}</p>
+                        </div>
+                        <i class="fas fa-cogs text-3xl text-purple-200"></i>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-r from-red-600 to-red-700 p-6 rounded-lg shadow-lg">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-red-100 text-sm">Unread Inquiries</p>
+                            <p class="text-3xl font-bold text-white">{{ stats.unread_inquiries }}</p>
+                        </div>
+                        <i class="fas fa-envelope text-3xl text-red-200"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- GitHub Stats Section -->
+        {% if github_stats %}
+        <section>
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">GitHub Statistics</h2>
+                <form action="{{ url_for('manual_github_update') }}" method="POST" class="inline">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
+                        <i class="fas fa-sync-alt mr-2"></i>Update Stats
+                    </button>
+                </form>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                <div class="bg-gray-800 p-4 rounded-lg text-center">
+                    <p class="text-2xl font-bold text-blue-400">{{ github_stats.public_repos }}</p>
+                    <p class="text-gray-400 text-sm">Repositories</p>
+                </div>
+                <div class="bg-gray-800 p-4 rounded-lg text-center">
+                    <p class="text-2xl font-bold text-yellow-400">{{ github_stats.total_stars }}</p>
+                    <p class="text-gray-400 text-sm">Stars</p>
+                </div>
+                <div class="bg-gray-800 p-4 rounded-lg text-center">
+                    <p class="text-2xl font-bold text-green-400">{{ github_stats.total_forks }}</p>
+                    <p class="text-gray-400 text-sm">Forks</p>
+                </div>
+                <div class="bg-gray-800 p-4 rounded-lg text-center">
+                    <p class="text-2xl font-bold text-purple-400">{{ github_stats.followers }}</p>
+                    <p class="text-gray-400 text-sm">Followers</p>
+                </div>
+                <div class="bg-gray-800 p-4 rounded-lg text-center">
+                    <p class="text-2xl font-bold text-pink-400">{{ github_stats.following }}</p>
+                    <p class="text-gray-400 text-sm">Following</p>
+                </div>
+                <div class="bg-gray-800 p-4 rounded-lg text-center">
+                    <p class="text-lg font-bold text-cyan-400">{{ github_stats.most_used_language }}</p>
+                    <p class="text-gray-400 text-sm">Top Language</p>
+                </div>
+            </div>
+            
+            <p class="text-gray-400 text-sm mt-4">Last updated: {{ github_stats.last_updated.strftime('%Y-%m-%d %H:%M') }}</p>
+        </section>
+        {% endif %}
+        
+        <!-- Contact Inquiries Section -->
+        <section>
+            <h2 class="text-2xl font-bold mb-4">Contact Inquiries</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full border border-gray-700 rounded-lg overflow-hidden shadow-lg">
+                    <thead class="bg-gray-800 text-gray-300 uppercase text-sm">
+                        <tr>
+                            <th class="py-3 px-6 text-left">Name</th>
+                            <th class="py-3 px-6 text-left">Email</th>
+                            <th class="py-3 px-6 text-left">Subject</th>
+                            <th class="py-3 px-6 text-left">Category</th>
+                            <th class="py-3 px-6 text-left">Priority</th>
+                            <th class="py-3 px-6 text-left">Status</th>
+                            <th class="py-3 px-6 text-left">Date</th>
+                            <th class="py-3 px-6 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-700">
+                        {% for inquiry in inquiries %}
+                        <tr class="hover:bg-gray-800 transition">
+                            <td class="py-3 px-6">{{ inquiry.name }}</td>
+                            <td class="py-3 px-6">
+                                <a href="mailto:{{ inquiry.email }}" class="text-blue-400 hover:underline">{{ inquiry.email }}</a>
+                            </td>
+                            <td class="py-3 px-6">{{ inquiry.subject }}</td>
+                            <td class="py-3 px-6">
+                                <span class="px-2 py-1 text-xs rounded-full 
+                                    {% if inquiry.category == 'job' %}bg-green-600 text-green-100
+                                    {% elif inquiry.category == 'project' %}bg-blue-600 text-blue-100
+                                    {% elif inquiry.category == 'collaboration' %}bg-purple-600 text-purple-100
+                                    {% else %}bg-gray-600 text-gray-100{% endif %}">
+                                    {{ inquiry.category.title() }}
+                                </span>
+                            </td>
+                            <td class="py-3 px-6">
+                                <span class="px-2 py-1 text-xs rounded-full 
+                                    {% if inquiry.priority == 'high' %}bg-red-600 text-red-100
+                                    {% elif inquiry.priority == 'normal' %}bg-yellow-600 text-yellow-100
+                                    {% else %}bg-gray-600 text-gray-100{% endif %}">
+                                    {{ inquiry.priority.title() }}
+                                </span>
+                            </td>
+                            <td class="py-3 px-6">
+                                <form action="{{ url_for('update_inquiry_status', id=inquiry.id) }}" method="POST" class="inline">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                    <select name="status" onchange="this.form.submit()" 
+                                            class="bg-gray-700 text-white text-xs px-2 py-1 rounded">
+                                        <option value="new" {% if inquiry.status == 'new' %}selected{% endif %}>New</option>
+                                        <option value="read" {% if inquiry.status == 'read' %}selected{% endif %}>Read</option>
+                                        <option value="replied" {% if inquiry.status == 'replied' %}selected{% endif %}>Replied</option>
+                                        <option value="closed" {% if inquiry.status == 'closed' %}selected{% endif %}>Closed</option>
+                                    </select>
+                                </form>
+                            </td>
+                            <td class="py-3 px-6 text-sm">{{ inquiry.created_at.strftime('%m/%d %H:%M') }}</td>
+                            <td class="py-3 px-6 text-center">
+                                <button onclick="showMessage('{{ inquiry.message | replace('\n', '\\n') | replace('\'', '\\\'') }}')" 
+                                        class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs mr-2">
+                                    View
+                                </button>
+                                <form action="{{ url_for('delete_inquiry', id=inquiry.id) }}" method="POST" class="inline">
+                                    <button type="submit" onclick="return confirm('Delete this inquiry?')"
+                                            class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="8" class="py-6 text-center text-gray-400">No inquiries found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <!-- Skills Management Section -->
+        <section>
+            <h2 class="text-2xl font-bold mb-4">Manage Skills</h2>
+            <!-- Add Skill Form -->
+            <form action="{{ url_for('add_skill') }}" method="POST"
+                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 bg-gray-800 p-6 rounded-lg shadow-lg">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="text" name="name" placeholder="Skill Name" required
+                    class="px-4 py-2 rounded-md bg-gray-700 text-white">
+                <select name="category" required class="px-4 py-2 rounded-md bg-gray-700 text-white">
+                    <option value="">Select Category</option>
+                    <option value="Frontend">Frontend</option>
+                    <option value="Backend">Backend</option>
+                    <option value="Database">Database</option>
+                    <option value="DevOps">DevOps</option>
+                    <option value="Cloud">Cloud</option>
+                    <option value="Tools">Tools</option>
+                </select>
+                <input type="number" name="proficiency" placeholder="Proficiency (1-100)" required min="1" max="100"
+                    class="px-4 py-2 rounded-md bg-gray-700 text-white">
+                <input type="number" name="years_experience" placeholder="Years Experience" required min="0" max="20" step="0.5"
+                    class="px-4 py-2 rounded-md bg-gray-700 text-white">
+                <button type="submit"
+                    class="col-span-full bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md text-white">Add Skill</button>
+            </form>
+
+            <!-- Skills Table -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full border border-gray-700 rounded-lg overflow-hidden shadow-lg">
+                    <thead class="bg-gray-800 text-gray-300 uppercase text-sm">
+                        <tr>
+                            <th class="py-3 px-6 text-left">Skill</th>
+                            <th class="py-3 px-6 text-left">Category</th>
+                            <th class="py-3 px-6 text-left">Proficiency</th>
+                            <th class="py-3 px-6 text-left">Experience</th>
+                            <th class="py-3 px-6 text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-700">
+                        {% for skill in skills %}
+                        <tr class="hover:bg-gray-800 transition">
+                            <td class="py-3 px-6 font-medium">{{ skill.name }}</td>
+                            <td class="py-3 px-6">
+                                <span class="px-2 py-1 text-xs rounded-full bg-blue-600 text-blue-100">
+                                    {{ skill.category }}
+                                </span>
+                            </td>
+                            <td class="py-3 px-6">
+                                <div class="flex items-center">
+                                    <div class="w-20 bg-gray-700 rounded-full h-2 mr-3">
+                                        <div class="bg-green-500 h-2 rounded-full" style="width: {{ skill.proficiency }}%"></div>
+                                    </div>
+                                    <span class="text-sm">{{ skill.proficiency }}%</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-6">{{ skill.years_experience }} years</td>
+                            <td class="py-3 px-6 text-center">
+                                <form action="{{ url_for('delete_skill', id=skill.id) }}" method="POST">
+                                    <button type="submit" onclick="return confirm('Delete this skill?')"
+                                        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="py-6 text-center text-gray-400">No skills added yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <!-- Blog Management Section -->
+        <section>
+            <h2 class="text-2xl font-bold mb-4">Manage Blog Posts</h2>
+            <!-- Add Blog Post Form -->
+            <form action="{{ url_for('add_blog_post') }}" method="POST"
+                class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <input type="text" name="title" placeholder="Post Title" required
+                        class="px-4 py-2 rounded-md bg-gray-700 text-white">
+                    <input type="number" name="read_time" placeholder="Read Time (minutes)" required min="1" max="60" value="5"
+                        class="px-4 py-2 rounded-md bg-gray-700 text-white">
+                </div>
+                <textarea name="excerpt" placeholder="Post Excerpt (optional)" rows="2"
+                    class="w-full px-4 py-2 rounded-md bg-gray-700 text-white mb-4"></textarea>
+                <textarea name="content" placeholder="Post Content (HTML allowed)" rows="8" required
+                    class="w-full px-4 py-2 rounded-md bg-gray-700 text-white mb-4"></textarea>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <input type="text" name="tags" placeholder="Tags (comma-separated)"
+                        class="px-4 py-2 rounded-md bg-gray-700 text-white">
+                    <label class="flex items-center text-white">
+                        <input type="checkbox" name="published" class="mr-2">
+                        Published
+                    </label>
+                    <label class="flex items-center text-white">
+                        <input type="checkbox" name="featured" class="mr-2">
+                        Featured
+                    </label>
+                </div>
+                <button type="submit"
+                    class="bg-green-600 hover:bg-green-700 px-6 py-2 rounded-md text-white">Add Blog Post</button>
+            </form>
+
+            <!-- Blog Posts Table -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full border border-gray-700 rounded-lg overflow-hidden shadow-lg">
+                    <thead class="bg-gray-800 text-gray-300 uppercase text-sm">
+                        <tr>
+                            <th class="py-3 px-6 text-left">Title</th>
+                            <th class="py-3 px-6 text-left">Status</th>
+                            <th class="py-3 px-6 text-left">Views</th>
+                            <th class="py-3 px-6 text-left">Created</th>
+                            <th class="py-3 px-6 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-700">
+                        {% for post in blog_posts %}
+                        <tr class="hover:bg-gray-800 transition">
+                            <td class="py-3 px-6">
+                                <div>
+                                    <p class="font-medium">{{ post.title }}</p>
+                                    {% if post.featured %}
+                                    <span class="inline-block px-2 py-1 text-xs bg-yellow-600 text-yellow-100 rounded mt-1">Featured</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="py-3 px-6">
+                                <span class="px-2 py-1 text-xs rounded-full 
+                                    {% if post.published %}bg-green-600 text-green-100{% else %}bg-gray-600 text-gray-100{% endif %}">
+                                    {% if post.published %}Published{% else %}Draft{% endif %}
+                                </span>
+                            </td>
+                            <td class="py-3 px-6">{{ post.views }}</td>
+                            <td class="py-3 px-6">{{ post.created_at.strftime('%m/%d/%Y') }}</td>
+                            <td class="py-3 px-6 text-center">
+                                <a href="/blog/{{ post.slug }}" target="_blank" 
+                                   class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs mr-2">View</a>
+                                <form action="{{ url_for('delete_blog_post', id=post.id) }}" method="POST" class="inline">
+                                    <button type="submit" onclick="return confirm('Delete this post?')"
+                                        class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="py-6 text-center text-gray-400">No blog posts yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <!-- Code Snippets Management Section -->
+        <section>
+            <h2 class="text-2xl font-bold mb-4">Manage Code Snippets</h2>
+            <!-- Add Code Snippet Form -->
+            <form action="{{ url_for('add_code_snippet') }}" method="POST"
+                class="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <input type="text" name="title" placeholder="Snippet Title" required
+                        class="px-4 py-2 rounded-md bg-gray-700 text-white">
+                    <select name="language" required class="px-4 py-2 rounded-md bg-gray-700 text-white">
+                        <option value="">Select Language</option>
+                        <option value="Python">Python</option>
+                        <option value="JavaScript">JavaScript</option>
+                        <option value="HTML">HTML</option>
+                        <option value="CSS">CSS</option>
+                        <option value="SQL">SQL</option>
+                        <option value="Bash">Bash</option>
+                        <option value="JSON">JSON</option>
+                        <option value="YAML">YAML</option>
+                    </select>
+                </div>
+                <textarea name="description" placeholder="Description (optional)" rows="2"
+                    class="w-full px-4 py-2 rounded-md bg-gray-700 text-white mb-4"></textarea>
+                <textarea name="code" placeholder="Code" rows="8" required
+                    class="w-full px-4 py-2 rounded-md bg-gray-700 text-white mb-4 font-mono"></textarea>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <input type="text" name="tags" placeholder="Tags (comma-separated)"
+                        class="px-4 py-2 rounded-md bg-gray-700 text-white">
+                    <label class="flex items-center text-white">
+                        <input type="checkbox" name="featured" class="mr-2">
+                        Featured
+                    </label>
+                </div>
+                <button type="submit"
+                    class="bg-green-600 hover:bg-green-700 px-6 py-2 rounded-md text-white">Add Code Snippet</button>
+            </form>
+
+            <!-- Code Snippets Table -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full border border-gray-700 rounded-lg overflow-hidden shadow-lg">
+                    <thead class="bg-gray-800 text-gray-300 uppercase text-sm">
+                        <tr>
+                            <th class="py-3 px-6 text-left">Title</th>
+                            <th class="py-3 px-6 text-left">Language</th>
+                            <th class="py-3 px-6 text-left">Featured</th>
+                            <th class="py-3 px-6 text-left">Created</th>
+                            <th class="py-3 px-6 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-700">
+                        {% for snippet in code_snippets %}
+                        <tr class="hover:bg-gray-800 transition">
+                            <td class="py-3 px-6 font-medium">{{ snippet.title }}</td>
+                            <td class="py-3 px-6">
+                                <span class="px-2 py-1 text-xs rounded-full bg-purple-600 text-purple-100">
+                                    {{ snippet.language }}
+                                </span>
+                            </td>
+                            <td class="py-3 px-6">
+                                {% if snippet.featured %}
+                                <span class="px-2 py-1 text-xs rounded-full bg-yellow-600 text-yellow-100">Yes</span>
+                                {% else %}
+                                <span class="px-2 py-1 text-xs rounded-full bg-gray-600 text-gray-100">No</span>
+                                {% endif %}
+                            </td>
+                            <td class="py-3 px-6">{{ snippet.created_at.strftime('%m/%d/%Y') }}</td>
+                            <td class="py-3 px-6 text-center">
+                                <form action="{{ url_for('delete_code_snippet', id=snippet.id) }}" method="POST" class="inline">
+                                    <button type="submit" onclick="return confirm('Delete this snippet?')"
+                                        class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="py-6 text-center text-gray-400">No code snippets yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
         <!-- Messages Section -->
         <section>
@@ -76,6 +488,7 @@
             <!-- Add Project Form -->
             <form action="{{ url_for('add_project') }}" method="POST"
                 class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 bg-gray-800 p-6 rounded-lg shadow-lg">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <input type="text" name="title" placeholder="Project Title" required
                     class="px-4 py-2 rounded-md bg-gray-700 text-white">
                 <input type="text" name="description" placeholder="Project Description" required
@@ -202,6 +615,43 @@
         &copy; {{ year }} Portfolio Admin Panel
     </footer>
 
+    <!-- Message Modal -->
+    <div id="messageModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-gray-800 p-6 rounded-lg max-w-2xl w-full mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-white">Message Content</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="messageContent" class="bg-gray-700 p-4 rounded text-white whitespace-pre-wrap max-h-96 overflow-y-auto"></div>
+            <div class="mt-4 text-right">
+                <button onclick="closeModal()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showMessage(message) {
+            document.getElementById('messageContent').textContent = message;
+            document.getElementById('messageModal').classList.remove('hidden');
+            document.getElementById('messageModal').classList.add('flex');
+        }
+        
+        function closeModal() {
+            document.getElementById('messageModal').classList.add('hidden');
+            document.getElementById('messageModal').classList.remove('flex');
+        }
+        
+        // Close modal when clicking outside
+        document.getElementById('messageModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
 </body>
 
 </html>

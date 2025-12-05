@@ -2,47 +2,58 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Admin Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - Secure Access</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    .login-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+    .neon-text { color: #64ffda; }
+  </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+<body class="login-bg min-h-screen flex items-center justify-center">
 
-  <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
-    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Admin Login</h2>
+  <div class="w-full max-w-md bg-slate-800/90 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-slate-700">
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-bold neon-text mb-2">Admin Access</h2>
+      <p class="text-slate-400">Secure authentication required</p>
+    </div>
 
-    <form method="POST" class="space-y-5">
+    <form method="POST" class="space-y-6" autocomplete="off">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+      
       <div>
-        <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-        <input type="text" name="username" id="username" required
-          class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+        <label for="username" class="block text-sm font-medium text-slate-300 mb-2">Username</label>
+        <input type="text" name="username" id="username" required maxlength="50" autocomplete="username"
+          class="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-neon-text focus:border-transparent transition-all">
       </div>
 
       <div>
-        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-        <input type="password" name="password" id="password" required
-          class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+        <label for="password" class="block text-sm font-medium text-slate-300 mb-2">Password</label>
+        <input type="password" name="password" id="password" required maxlength="100" autocomplete="current-password"
+          class="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-neon-text focus:border-transparent transition-all">
       </div>
 
       <button type="submit"
-        class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition duration-200">
-        Login
+        class="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+        <i class="fas fa-lock mr-2"></i>Secure Login
       </button>
     </form>
 
     <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
-        <div class="mt-5 space-y-2">
+        <div class="mt-6 space-y-3">
           {% for category, message in messages %}
-            <div class="p-3 rounded-lg text-sm
+            <div class="p-4 rounded-lg text-sm border
               {% if category == 'success' %}
-                bg-green-100 text-green-800
+                bg-green-900/50 border-green-500 text-green-200
               {% elif category == 'danger' %}
-                bg-red-100 text-red-800
+                bg-red-900/50 border-red-500 text-red-200
               {% elif category == 'warning' %}
-                bg-yellow-100 text-yellow-800
+                bg-yellow-900/50 border-yellow-500 text-yellow-200
               {% else %}
-                bg-gray-100 text-gray-800
+                bg-slate-700/50 border-slate-500 text-slate-200
               {% endif %}">
               {{ message }}
             </div>
@@ -51,7 +62,30 @@
       {% endif %}
     {% endwith %}
 
+    <div class="mt-8 text-center">
+      <a href="{{ url_for('home') }}" class="text-neon-text hover:underline transition-colors">
+        <i class="fas fa-arrow-left mr-2"></i>Back to Portfolio
+      </a>
+    </div>
+    
+    <div class="mt-6 text-center text-xs text-slate-500">
+      <p><i class="fas fa-shield-alt mr-1"></i>Protected by advanced security</p>
+    </div>
   </div>
+
+  <script>
+    // Security enhancements
+    window.addEventListener('load', function() {
+      // Clear form fields on load
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+    });
+    
+    // Prevent form resubmission
+    if (window.history.replaceState) {
+      window.history.replaceState(null, null, window.location.href);
+    }
+  </script>
 
 </body>
 </html>
