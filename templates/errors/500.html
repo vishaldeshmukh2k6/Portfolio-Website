@@ -1,19 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>500 - Internal Server Error</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>500 - Internal Server Error</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+    .neon-text { color: #64ffda; }
+  </style>
 </head>
-
-<body>
-    <div class="error-container">
-        <h1>500</h1>
-        <p>Something went wrong on our end. Please try again later.</p>
-        <a href="{{ url_for('home') }}">Go Back Home</a>
-    </div>
+<body class="min-h-screen flex items-center justify-center px-4">
+  <div class="text-center">
+    <h1 class="text-8xl md:text-9xl font-bold neon-text mb-4">500</h1>
+    <p class="text-xl md:text-2xl text-slate-300 mb-8">Something went wrong on our end. Please try again later.</p>
+    <a href="{{ url_for('home') }}" 
+       class="inline-block border-2 border-neon-text text-neon-text px-8 py-3 rounded-md hover:bg-neon-text hover:text-slate-900 transition duration-300">
+      <i class="fa-solid fa-home mr-2"></i>Go Back Home
+    </a>
+  </div>
 </body>
-
 </html>
