@@ -91,14 +91,14 @@
     <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 glass-effect">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <a href="/" class="text-2xl font-bold neon-text">VD</a>
-            <div class="hidden md:flex space-x-8 items-center">
-                <a href="#about" class="hover:text-neon-text transition duration-300">01. About</a>
-                <a href="#projects" class="hover:text-neon-text transition duration-300">02. Projects</a>
-                <a href="#blog" class="hover:text-neon-text transition duration-300">03. Blog</a>
-                <a href="#contact" class="hover:text-neon-text transition duration-300">04. Contact</a>
-                <a href="/code-snippets" class="hover:text-neon-text transition duration-300">Code</a>
+            <div class="hidden md:flex space-x-4 lg:space-x-8 items-center">
+                <a href="#about" class="hover:text-neon-text transition duration-300 text-sm lg:text-base">01. About</a>
+                <a href="#projects" class="hover:text-neon-text transition duration-300 text-sm lg:text-base">02. Projects</a>
+                <a href="#blog" class="hover:text-neon-text transition duration-300 text-sm lg:text-base">03. Blog</a>
+                <a href="#contact" class="hover:text-neon-text transition duration-300 text-sm lg:text-base">04. Contact</a>
+                <a href="/code-snippets" class="hover:text-neon-text transition duration-300 text-sm lg:text-base">Code</a>
                 <a href="{{ url_for('static', filename='resume.pdf') }}" target="_blank"
-                    class="border border-neon-text text-neon-text px-4 py-2 rounded-md hover:bg-neon-text hover:bg-opacity-10 transition duration-300">Resume</a>
+                    class="border border-neon-text text-neon-text px-3 py-2 rounded-md hover:bg-neon-text hover:bg-opacity-10 transition duration-300 text-sm lg:text-base">Resume</a>
                 <!-- Theme Toggle -->
                 <button id="theme-toggle"
                     class="p-2 rounded-lg bg-slate-700 text-slate-200 hover:bg-slate-600 transition">
@@ -111,15 +111,15 @@
             </button>
         </nav>
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-slate-900 absolute top-full left-0 w-full">
-            <div class="flex flex-col items-center space-y-4 py-4">
-                <a href="#about" class="hover:text-neon-text transition duration-300">01. About</a>
-                <a href="#projects" class="hover:text-neon-text transition duration-300">02. Projects</a>
-                <a href="#blog" class="hover:text-neon-text transition duration-300">03. Blog</a>
-                <a href="#contact" class="hover:text-neon-text transition duration-300">04. Contact</a>
-                <a href="/code-snippets" class="hover:text-neon-text transition duration-300">Code</a>
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-900 absolute top-full left-0 w-full shadow-lg">
+            <div class="flex flex-col items-center space-y-4 py-6">
+                <a href="#about" class="hover:text-neon-text transition duration-300 text-base" onclick="document.getElementById('mobile-menu').classList.add('hidden')">01. About</a>
+                <a href="#projects" class="hover:text-neon-text transition duration-300 text-base" onclick="document.getElementById('mobile-menu').classList.add('hidden')">02. Projects</a>
+                <a href="#blog" class="hover:text-neon-text transition duration-300 text-base" onclick="document.getElementById('mobile-menu').classList.add('hidden')">03. Blog</a>
+                <a href="#contact" class="hover:text-neon-text transition duration-300 text-base" onclick="document.getElementById('mobile-menu').classList.add('hidden')">04. Contact</a>
+                <a href="/code-snippets" class="hover:text-neon-text transition duration-300 text-base">Code</a>
                 <a href="{{ url_for('static', filename='resume.pdf') }}" target="_blank"
-                    class="border border-neon-text text-neon-text px-4 py-2 rounded-md hover:bg-neon-text hover:bg-opacity-10 transition duration-300">Resume</a>
+                    class="border border-neon-text text-neon-text px-6 py-2 rounded-md hover:bg-neon-text hover:bg-opacity-10 transition duration-300 text-base">Resume</a>
                 <!-- Mobile Theme Toggle -->
                 <button id="theme-toggle-mobile"
                     class="p-2 rounded-lg bg-slate-700 text-slate-200 hover:bg-slate-600 transition">

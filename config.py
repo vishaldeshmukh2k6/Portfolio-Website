@@ -95,8 +95,8 @@ class ProductionConfig(Config):
     SESSION_COOKIE_SECURE = True
     WTF_CSRF_ENABLED = True
     
-    # Use PostgreSQL in production
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'postgresql://user:pass@localhost/portfolio')
+    # Use SQLite in production
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///portfolio.db')
     
     # Enhanced security headers
     FORCE_HTTPS = True

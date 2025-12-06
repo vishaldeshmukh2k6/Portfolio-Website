@@ -71,3 +71,4 @@ static/certificates/
 *.bak
 *.backup
 *.orig
+.env.example

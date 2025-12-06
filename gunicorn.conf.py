@@ -4,7 +4,7 @@ import os
 bind = f"0.0.0.0:{os.getenv('PORT', '5000')}"
 backlog = 2048
 
-# Worker processes - reduced for Railway's memory limits
+# Worker processes
 workers = 1
 worker_class = "sync"
 worker_connections = 1000

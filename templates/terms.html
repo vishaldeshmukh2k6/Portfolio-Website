@@ -33,7 +33,7 @@
     <header class="fixed top-0 left-0 right-0 z-50 glass-effect">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <a href="/" class="text-2xl font-bold neon-text">VD</a>
-            <div class="flex items-center space-x-6">
+            <div class="hidden md:flex items-center space-x-6">
                 <a href="/" class="hover:text-neon-text transition duration-300">
                     <i class="fa-solid fa-home mr-2"></i>Home
                 </a>
@@ -44,7 +44,23 @@
                     <i class="fa-solid fa-code mr-2"></i>Code
                 </a>
             </div>
+            <button id="mobile-menu-btn" class="md:hidden text-2xl">
+                <i class="fa-solid fa-bars"></i>
+            </button>
         </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-900 absolute top-full left-0 w-full">
+            <div class="flex flex-col items-center space-y-4 py-4">
+                <a href="/" class="hover:text-neon-text transition duration-300">
+                    <i class="fa-solid fa-home mr-2"></i>Home
+                </a>
+                <a href="/blog" class="hover:text-neon-text transition duration-300">
+                    <i class="fa-solid fa-blog mr-2"></i>Blog
+                </a>
+                <a href="/code-snippets" class="hover:text-neon-text transition duration-300">
+                    <i class="fa-solid fa-code mr-2"></i>Code
+                </a>
+            </div>
+        </div>
     </header>
 
     <main class="container mx-auto px-6 md:px-16 lg:px-24 pt-24 pb-12">
@@ -187,6 +203,15 @@
     </footer>
 
     <script>
+        // Mobile menu
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (menuBtn) {
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+        
         // Simple date formatting
         document.addEventListener('DOMContentLoaded', function() {
             const now = new Date();
