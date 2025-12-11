@@ -23,9 +23,6 @@ wheels/
 *.egg
 
 # Flask
-instance/
-*.sqlite3
-*.db
 
 # Environment variables
 .env
@@ -55,7 +52,6 @@ logs/
 
 # Static files
 static/uploads/
-static/img/
 static/resume.pdf
 static/certificates/
 
