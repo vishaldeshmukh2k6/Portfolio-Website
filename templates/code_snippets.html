@@ -10,33 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        body.dark { background-color: #0a192f; color: #ccd6f6; }
-        .glass-effect {
-            background: rgba(23, 49, 85, 0.3);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .neon-text { color: #64ffda; }
-        .code-container { position: relative; }
-        .copy-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(100, 255, 218, 0.1);
-            border: 1px solid #64ffda;
-            color: #64ffda;
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .code-container:hover .copy-btn { opacity: 1; }
-        .copy-btn:hover { background: rgba(100, 255, 218, 0.2); }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body class="leading-relaxed antialiased dark">
     <!-- Header -->
