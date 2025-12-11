@@ -72,3 +72,4 @@ static/certificates/
 *.backup
 *.orig
 .env.example
+.gitignore

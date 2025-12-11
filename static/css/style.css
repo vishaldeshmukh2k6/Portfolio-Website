@@ -1,0 +1,245 @@
+/* Global Styles */
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+body.dark {
+    background-color: #0a192f;
+    color: #ccd6f6;
+}
+
+body.light {
+    background-color: #f8fafc;
+    color: #1e293b;
+}
+
+/* Glass Effect */
+.glass-effect {
+    background: rgba(23, 49, 85, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Neon Text */
+.neon-text {
+    color: #64ffda;
+}
+
+/* Section Heading */
+.section-heading {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+}
+
+.section-heading::after {
+    content: '';
+    display: block;
+    position: relative;
+    top: 2px;
+    width: 200px;
+    height: 1px;
+    margin-left: 20px;
+    background-color: #334155;
+}
+
+/* Typed Cursor */
+.typed-cursor {
+    color: #64ffda;
+}
+
+/* Skill Bar */
+.skill-bar {
+    background: linear-gradient(90deg, #64ffda 0%, #64ffda var(--progress), transparent var(--progress));
+    transition: all 0.8s ease;
+    width: 0%;
+}
+
+/* GitHub Stats */
+.github-stat {
+    background: linear-gradient(135deg, rgba(100, 255, 218, 0.1) 0%, rgba(100, 255, 218, 0.05) 100%);
+    border: 1px solid rgba(100, 255, 218, 0.2);
+}
+
+/* Search Container */
+.search-container {
+    position: relative;
+}
+
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(100, 255, 218, 0.2);
+    border-radius: 0.5rem;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+/* Line Clamp */
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Prose (Blog) */
+.prose {
+    max-width: none;
+}
+
+.prose h1,
+.prose h2,
+.prose h3 {
+    color: #ccd6f6;
+}
+
+.prose p {
+    color: #8892b0;
+    line-height: 1.7;
+}
+
+.prose code {
+    background: #1e293b;
+    padding: 0.2em 0.4em;
+    border-radius: 0.25rem;
+}
+
+.prose pre {
+    background: #1e293b !important;
+}
+
+/* Code Snippet */
+.code-container {
+    position: relative;
+}
+
+.copy-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(100, 255, 218, 0.1);
+    border: 1px solid #64ffda;
+    color: #64ffda;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.code-container:hover .copy-btn {
+    opacity: 1;
+}
+
+.copy-btn:hover {
+    background: rgba(100, 255, 218, 0.2);
+}
+
+/* Login Page */
+.login-bg {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+/* -------------------------------------- */
+/* 🚀 RESPONSIVE DESIGN */
+/* -------------------------------------- */
+
+/* Tablets */
+@media (max-width: 992px) {
+
+    .section-heading {
+        font-size: 1.5rem;
+    }
+
+    .section-heading::after {
+        width: 120px;
+    }
+
+    .search-results {
+        max-height: 250px;
+    }
+
+    .prose p {
+        font-size: 1rem;
+    }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+
+    body {
+        font-size: 15px;
+    }
+
+    .section-heading {
+        font-size: 1.35rem;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .section-heading::after {
+        margin-left: 0;
+        margin-top: 10px;
+        width: 100px;
+    }
+
+    .search-results {
+        max-height: 220px;
+    }
+
+    .copy-btn {
+        top: 5px;
+        right: 5px;
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+
+    .prose pre {
+        overflow-x: auto;
+        font-size: 0.85rem;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+
+    .section-heading {
+        font-size: 1.2rem;
+    }
+
+    .section-heading::after {
+        width: 70px;
+    }
+
+    .prose h1 {
+        font-size: 1.6rem;
+    }
+
+    .prose h2 {
+        font-size: 1.4rem;
+    }
+
+    .prose p {
+        font-size: 0.95rem;
+    }
+
+    .copy-btn {
+        font-size: 9px;
+    }
+
+    .search-results {
+        max-height: 180px;
+    }
+}
+
